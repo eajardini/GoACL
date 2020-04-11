@@ -3,7 +3,7 @@
     "width": 2000,
     "height": 2000,
     "scrollTop": 0,
-    "scrollLeft": 131,
+    "scrollLeft": 0,
     "show": {
       "tableComment": false,
       "columnComment": false,
@@ -17,7 +17,7 @@
     },
     "database": "PostgreSQL",
     "databaseName": "",
-    "canvasType": "ERD",
+    "canvasType": "List",
     "language": "graphql",
     "tableCase": "pascalCase",
     "columnCase": "none"
@@ -123,7 +123,7 @@
         ],
         "id": "11ca0d3f-6890-4bb2-a52e-0bfa785e79fe",
         "ui": {
-          "active": true,
+          "active": false,
           "top": 68,
           "left": 877,
           "widthName": 62,
@@ -337,7 +337,7 @@
           {
             "name": "userBloquado",
             "comment": "",
-            "dataType": "BOOLEAN",
+            "dataType": "integer",
             "default": "",
             "id": "b08a439e-afac-453a-a6bd-b29ce67f7b67",
             "option": {
@@ -353,14 +353,14 @@
               "pfk": false,
               "widthName": 88,
               "widthComment": 60,
-              "widthDataType": 63,
+              "widthDataType": 60,
               "widthDefault": 60
             }
           },
           {
             "name": "userAtivo",
             "comment": "",
-            "dataType": "BOOLEAN",
+            "dataType": "integer",
             "default": "",
             "id": "e87766e0-ea79-4998-bdbe-0b18b2753fbb",
             "option": {
@@ -376,7 +376,7 @@
               "pfk": false,
               "widthName": 60,
               "widthComment": 60,
-              "widthDataType": 63,
+              "widthDataType": 60,
               "widthDefault": 60
             }
           }
@@ -388,271 +388,11 @@
           "left": 86,
           "widthName": 71,
           "widthComment": 60,
-          "zIndex": 47
+          "zIndex": 61
         }
       }
     ],
-    "tableFocus": {
-      "focusName": false,
-      "focusComment": false,
-      "focusColumns": [
-        {
-          "selected": false,
-          "focusName": false,
-          "focusDataType": false,
-          "focusNotNull": false,
-          "focusDefault": false,
-          "focusComment": false,
-          "column": {
-            "name": "grupoID",
-            "comment": "",
-            "dataType": " bigint",
-            "default": "",
-            "id": "9429b4ab-249c-4ffe-895b-65ff6a18bd2f",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": true,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": true,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 20,
-              "widthDefault": 60
-            }
-          }
-        },
-        {
-          "selected": true,
-          "focusName": true,
-          "focusDataType": false,
-          "focusNotNull": false,
-          "focusDefault": false,
-          "focusComment": false,
-          "column": {
-            "name": "codigoGrupo",
-            "comment": "",
-            "dataType": "varchar(10)",
-            "default": "",
-            "id": "bee9d1df-82ad-4758-8db1-5f4ce4f7dbfa",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 82,
-              "widthComment": 60,
-              "widthDataType": 71,
-              "widthDefault": 60
-            }
-          }
-        },
-        {
-          "selected": false,
-          "focusName": false,
-          "focusDataType": false,
-          "focusNotNull": false,
-          "focusDefault": false,
-          "focusComment": false,
-          "column": {
-            "name": "descricaoGrupo",
-            "comment": "",
-            "dataType": "varchar(30)",
-            "default": "",
-            "id": "db32df3d-5fae-4e82-8317-4b32eb3a76ed",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 99,
-              "widthComment": 60,
-              "widthDataType": 71,
-              "widthDefault": 60
-            }
-          }
-        },
-        {
-          "selected": false,
-          "focusName": false,
-          "focusDataType": false,
-          "focusNotNull": false,
-          "focusDefault": false,
-          "focusComment": false,
-          "column": {
-            "name": "dataCriacaoGrupo",
-            "comment": "",
-            "dataType": "date",
-            "default": "",
-            "id": "bd4f451b-ad8c-4b7d-b62c-10ab90638aa0",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 114,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          }
-        }
-      ],
-      "currentFocusTable": false,
-      "currentColumn": {
-        "name": "codigoGrupo",
-        "comment": "",
-        "dataType": "varchar(10)",
-        "default": "",
-        "id": "bee9d1df-82ad-4758-8db1-5f4ce4f7dbfa",
-        "option": {
-          "autoIncrement": false,
-          "primaryKey": false,
-          "unique": false,
-          "notNull": false
-        },
-        "ui": {
-          "active": false,
-          "pk": false,
-          "fk": false,
-          "pfk": false,
-          "widthName": 82,
-          "widthComment": 60,
-          "widthDataType": 71,
-          "widthDefault": 60
-        }
-      },
-      "table": {
-        "name": "acl_grupo",
-        "comment": "",
-        "columns": [
-          {
-            "name": "grupoID",
-            "comment": "",
-            "dataType": " bigint",
-            "default": "",
-            "id": "9429b4ab-249c-4ffe-895b-65ff6a18bd2f",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": true,
-              "unique": false,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": true,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 20,
-              "widthDefault": 60
-            }
-          },
-          {
-            "name": "codigoGrupo",
-            "comment": "",
-            "dataType": "varchar(10)",
-            "default": "",
-            "id": "bee9d1df-82ad-4758-8db1-5f4ce4f7dbfa",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 82,
-              "widthComment": 60,
-              "widthDataType": 71,
-              "widthDefault": 60
-            }
-          },
-          {
-            "name": "descricaoGrupo",
-            "comment": "",
-            "dataType": "varchar(30)",
-            "default": "",
-            "id": "db32df3d-5fae-4e82-8317-4b32eb3a76ed",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 99,
-              "widthComment": 60,
-              "widthDataType": 71,
-              "widthDefault": 60
-            }
-          },
-          {
-            "name": "dataCriacaoGrupo",
-            "comment": "",
-            "dataType": "date",
-            "default": "",
-            "id": "bd4f451b-ad8c-4b7d-b62c-10ab90638aa0",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 114,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            }
-          }
-        ],
-        "id": "11ca0d3f-6890-4bb2-a52e-0bfa785e79fe",
-        "ui": {
-          "active": true,
-          "top": 68,
-          "left": 877,
-          "widthName": 62,
-          "widthComment": 60,
-          "zIndex": 55
-        }
-      }
-    },
+    "tableFocus": null,
     "edit": null,
     "copyColumns": [],
     "columnDraggable": null

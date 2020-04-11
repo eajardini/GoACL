@@ -1,18 +1,21 @@
 package acl
 
 import (
+	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
 	modelACL "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl/model"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/now"
 )
 
-type resposta struct {
+//Resposta : Armazena as mensagens de resposta das funções
+type Resposta struct {
 	Mensagem string
 }
 
 var (
-	Resposta resposta
-	erro     error
+	Resp Resposta
+	erro error
+	bd   bancoDeDados.BDCon
 
 // msgErro     string
 // erroRetorno error
@@ -48,19 +51,103 @@ func NovoUsuario(c *gin.Context) {
 	)
 	erro = c.ShouldBindJSON(&userACLJSON)
 	if erro != nil {
-		Resposta.Mensagem = "[aclUsuario|NovoUsuario N.01]Houve erro ao fazer Bind do JSON"
-		c.JSON(200, Resposta)
+		Resp.Mensagem = "[AUSERRNUS001 | aclUsuario|NovoUsuario N.01]Houve erro ao fazer Bind do JSON"
+		c.JSON(200, Resp)
 		return
 	}
 
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
 	userACL = atribuiDadosUsuario(userACLJSON)
-	erro = modelACL.CriaNovoUsuario(userACL)
+	erro = modelACL.CriaNovoUsuario(userACL, bd)
 
 	if erro != nil {
-		Resposta.Mensagem = "Houve erro ao criar o usuário"
+		Resp.Mensagem = erro.Error()
 	} else {
-		Resposta.Mensagem = "Usuário Criado com Sucesso"
+		Resp.Mensagem = "Usuário Criado com Sucesso"
 	}
-	c.JSON(200, Resposta)
+	c.JSON(200, Resp)
+}
 
+//RemoveUsuario : responsável por receber os dados via requisição e atribuir valor 0 no campo UsuarioAtivo
+// e assim apagar logicamente o susuário
+func RemoveUsuario(c *gin.Context) {
+
+	var (
+		ACLUsuarioLoginJSON modelACL.ACLUsuarioLoginJSON
+	)
+	erro = c.ShouldBindJSON(&ACLUsuarioLoginJSON)
+	if erro != nil {
+		Resp.Mensagem = "[AUSINFRUR001 | aclUsuario|RemoveUsuario N.01]Houve erro ao fazer Bind do JSON"
+		c.JSON(200, Resp)
+		return
+	}
+
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	erro = modelACL.RemoveUsuarioPorLogin(ACLUsuarioLoginJSON.Login, bd)
+
+	if erro != nil {
+		Resp.Mensagem = erro.Error()
+	} else {
+		Resp.Mensagem = "[AUSINFRUR002 | aclUsuario|RemoveUsuario 02]  Usuário Removido com Sucesso"
+	}
+	c.JSON(200, Resp)
+}
+
+// RemoveFisicamenteUsuario : zz
+func RemoveFisicamenteUsuario(c *gin.Context) {
+
+	var (
+		ACLUsuarioLoginJSON modelACL.ACLUsuarioLoginJSON
+	)
+	erro = c.ShouldBindJSON(&ACLUsuarioLoginJSON)
+	if erro != nil {
+		Resp.Mensagem = "[AUSINFRFU001 | aclUsuario|RemoveFisicamenteUsuario N.01]Houve erro ao fazer Bind do JSON"
+		c.JSON(200, Resp)
+		return
+	}
+
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	erro = modelACL.RemoveFisicamenteUsuarioPorLogin(ACLUsuarioLoginJSON.Login, bd)
+
+	if erro != nil {
+		Resp.Mensagem = erro.Error()
+	} else {
+		Resp.Mensagem = "[AUSINFRFU002 | aclUsuario|RemoveFisicamenteUsuario 02]  Usuário Removido Fisicamente com Sucesso"
+	}
+	c.JSON(200, Resp)
+}
+
+// Ativa Usuário
+
+// AtivaUsuario : responsável por receber os dados via requisição e atribuir valor 0 no campo UsuarioAtivo
+// e assim apagar logicamente o susuário
+func AtivaUsuario(c *gin.Context) {
+
+	var (
+		ACLUsuarioLoginJSON modelACL.ACLUsuarioLoginJSON
+	)
+	erro = c.ShouldBindJSON(&ACLUsuarioLoginJSON)
+	if erro != nil {
+		Resp.Mensagem = "[AUSINFATU001 | aclUsuario |AtivaUsuario N.01]Houve erro ao fazer Bind do JSON"
+		c.JSON(200, Resp)
+		return
+	}
+
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	erro = modelACL.AtivaUsuarioPorLogin(ACLUsuarioLoginJSON.Login, bd)
+
+	if erro != nil {
+		Resp.Mensagem = erro.Error()
+	} else {
+		Resp.Mensagem = "[AUSINFATU002 | aclUsuario|AtivaUsuario 02]  Usuário Ativado com Sucesso"
+	}
+	c.JSON(200, Resp)
 }

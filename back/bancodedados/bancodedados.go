@@ -107,7 +107,7 @@ func (bdcon *BDCon) IniciaConexao() error {
 func (bdcon *BDCon) AbreConexao() error {
 	db, err := gorm.Open(sgbd, stringConexao)
 	if err != nil {
-		log.Println("[bancodedados.go|AbreConexao N.07]: Erro ao abrir o Banco de Dados. Motivo: ", err)
+		log.Println("[BDDERRACN007  | bancodedados.go|AbreConexao N.07]: Erro ao abrir o Banco de Dados. Motivo: ", err)
 		log.Fatalln(err)
 	}
 	//seta a variavel BD para fazer as consultas SQL

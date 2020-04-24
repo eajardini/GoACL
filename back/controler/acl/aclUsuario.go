@@ -70,9 +70,9 @@ func NovoUsuario(c *gin.Context) {
 	c.JSON(200, Resp)
 }
 
-//RemoveUsuario : responsável por receber os dados via requisição e atribuir valor 0 no campo UsuarioAtivo
-// e assim apagar logicamente o susuário
-func RemoveUsuario(c *gin.Context) {
+//DesativaUsuario : responsável por receber os dados via requisição e atribuir valor 0 no campo UsuarioAtivo
+// e assim desativar (apagar logicamente, fazer soft delete) o susuário
+func DesativaUsuario(c *gin.Context) {
 
 	var (
 		ACLUsuarioLoginJSON modelACL.ACLUsuarioLoginJSON
@@ -125,7 +125,7 @@ func RemoveFisicamenteUsuario(c *gin.Context) {
 
 // Ativa Usuário
 
-// AtivaUsuario : responsável por receber os dados via requisição e atribuir valor 0 no campo UsuarioAtivo
+// AtivaUsuario : responsável por receber os dados via requisição e atribuir valor 1 no campo UsuarioAtivo
 // e assim apagar logicamente o susuário
 func AtivaUsuario(c *gin.Context) {
 
@@ -150,4 +150,88 @@ func AtivaUsuario(c *gin.Context) {
 		Resp.Mensagem = "[AUSINFATU002 | aclUsuario|AtivaUsuario 02]  Usuário Ativado com Sucesso"
 	}
 	c.JSON(200, Resp)
+}
+
+// AlteraUsuario : responsável por receber os dados via requisição e alterar os dados do usuário
+func AlteraUsuario(c *gin.Context) {
+
+	var (
+		userACLJSON modelACL.ACLUsuarioJSON
+		userACL     modelACL.ACLUsuario
+	)
+	erro = c.ShouldBindJSON(&userACLJSON)
+	if erro != nil {
+		Resp.Mensagem = "[AUSERRAUS001 | aclUsuario|AlteraUsuario N.01]Houve erro ao fazer Bind do JSON"
+		c.JSON(200, Resp)
+		return
+	}
+
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	userACL = atribuiDadosUsuario(userACLJSON)
+	erro = modelACL.AlteraUsuario(userACL, bd)
+
+	if erro != nil {
+		Resp.Mensagem = erro.Error()
+	} else {
+		Resp.Mensagem = "[AUSINFAUS002 | aclUsuario|AlteraUsuario N.02]Usuário alterado com sucesso"
+	}
+	c.JSON(200, Resp)
+}
+
+// BuscaTodosUsuario : responsável por buscar todos os dados dos usuários
+func BuscaTodosUsuario(c *gin.Context) {
+	var (
+		UserACLRetorno []modelACL.ACLUsuario
+		// errolocal      error
+	)
+
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	UserACLRetorno, _ = modelACL.BuscaTodosUsuario(bd)
+
+	c.JSON(200, UserACLRetorno)
+}
+
+// BuscaTodosUsuariosAtivos : responsável por buscar todos os dados dos usuários
+func BuscaTodosUsuariosAtivos(c *gin.Context) {
+	var (
+		UserACLRetorno []modelACL.ACLUsuario
+		// errolocal      error
+	)
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	UserACLRetorno, _ = modelACL.BuscaTodosUsuariosAtivos(bd)
+
+	c.JSON(200, UserACLRetorno)
+}
+
+// BuscaUsuarioPorLogin : responsável por buscar todos os dados dos usuários
+func BuscaUsuarioPorLogin(c *gin.Context) {
+	var (
+		UserACLRetorno      modelACL.ACLUsuario
+		ACLUsuarioLoginJSON modelACL.ACLUsuarioLoginJSON
+		errolocal           error
+	)
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	errolocal = c.ShouldBindJSON(&ACLUsuarioLoginJSON)
+	if errolocal != nil {
+		UserACLRetorno.Login = "[AUSERRBPL001 | aclUsuario |BuscaUsuarioPorLogin N.01]Houve erro ao fazer Bind do JSON"
+		c.JSON(200, UserACLRetorno)
+		return
+	}
+
+	UserACLRetorno, errolocal = modelACL.BuscaUsuarioPorLogin(ACLUsuarioLoginJSON.Login, bd)
+
+	if errolocal != nil {
+		UserACLRetorno.Login = "Usuário não encontrado"
+		c.JSON(200, UserACLRetorno)
+		return
+	}
+	c.JSON(200, UserACLRetorno)
 }

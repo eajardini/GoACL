@@ -13,21 +13,22 @@ import (
 
 var (
 	// bd          bancoDeDados.BDCon
-	msgErro     string
-	erroRetorno error
-	validate    *validator.Validate
+	msgErro string
+	//erroRetorno error
+	validate *validator.Validate
 )
 
 //ACLUsuario : zz
 type ACLUsuario struct {
 	//gorm.Model
-	UsuarioID     uint64    `gorm:"type:bigint; primary_key; type: bigserial ;column:usuarioid" json:"usuarioid" `
-	Login         string    `gorm:"type:varchar(20); unique; not null" json:"login" validate:"required"`
-	Password      string    `gorm:"type:varchar(20)" json:"password" validate:"required"`
-	Datacriacao   time.Time `gorm:"type:date" json:"datacriacao" validate:"required"`
-	Datavalidade  time.Time `gorm:"type:date" json:"datavalidade"`
-	Userbloqueado int       `gorm:"type:integer" json:"userbloqueado" validate:"number,gte=0,lte=1"`
-	Userativo     int       `gorm:"type:integer" json:"userativo" validate:"number,gte=0,lte=1"`
+	UsuarioID           uint64    `gorm:"type:bigint; primary_key; type: bigserial ;column:usuarioid" json:"usuarioid" `
+	Login               string    `gorm:"type:varchar(25); unique; not null" json:"login" validate:"required"`
+	Password            string    `gorm:"type:varchar(50)" json:"password" validate:"required"`
+	Datacriacao         time.Time `gorm:"type:date" json:"datacriacao" validate:"required"`
+	Datavalidade        time.Time `gorm:"type:date" json:"datavalidade"`
+	Userbloqueado       int       `gorm:"type:integer" json:"userbloqueado" validate:"number,gte=0,lte=1"`
+	Userativo           int       `gorm:"type:integer" json:"userativo" validate:"number,gte=0,lte=1"`
+	LoginAntesDeApagado string    `gorm:"type:varchar(25); column:LoginAntesDeApagado" json:"loginAntesDeApagado"`
 }
 
 //ACLUsuarioJSON : zz
@@ -70,6 +71,7 @@ func CriaNovoUsuario(ACLUser ACLUsuario, bdPar bancoDeDados.BDCon) error {
 	var (
 		// achou int
 		ACLUserLocal ACLUsuario
+		erroRetorno  error
 	)
 
 	validate = validator.New()
@@ -115,10 +117,13 @@ func CriaNovoUsuario(ACLUser ACLUsuario, bdPar bancoDeDados.BDCon) error {
 //** Remove usuário
 
 // RemoveUsuarioPorLogin : atribui valor 0 no campo UsuarioAtivo
-// e assim apagar logicamente o susuário
+// e assim apagar logicamente (soft delete) o usuário
 func RemoveUsuarioPorLogin(loginPar string, bdPar bancoDeDados.BDCon) error {
 
-	var ACLUser ACLUsuario
+	var (
+		ACLUser     ACLUsuario
+		erroRetorno error
+	)
 
 	// achou := VerificaSeLoginJaExisteNoBD(loginPar, bdPar)
 	achou := bdPar.BD.Where("login = ?", loginPar).First(&ACLUser)
@@ -149,9 +154,14 @@ func RemoveUsuarioPorLogin(loginPar string, bdPar bancoDeDados.BDCon) error {
 }
 
 //RemoveFisicamenteUsuarioPorLogin : remove o login por meio do camando delete
+//Usado apenas para fins didádicos. O Login não pode ser removdo da base.
+//Se eu quiser liberar um login, eu uso a função LiberarLogin
 func RemoveFisicamenteUsuarioPorLogin(loginPar string, bdPar bancoDeDados.BDCon) error {
 
-	var ACLUser ACLUsuario
+	var (
+		ACLUser     ACLUsuario
+		erroRetorno error
+	)
 
 	achou := bdPar.BD.Where("login = ?", loginPar).First(&ACLUser)
 	if achou.RowsAffected == 0 {
@@ -190,7 +200,10 @@ func RemoveFisicamenteUsuarioPorLogin(loginPar string, bdPar bancoDeDados.BDCon)
 // e assim ativa usuário apagado logicamente
 func AtivaUsuarioPorLogin(loginPar string, bdPar bancoDeDados.BDCon) error {
 
-	var ACLUser ACLUsuario
+	var (
+		ACLUser     ACLUsuario
+		erroRetorno error
+	)
 
 	// achou := VerificaSeLoginJaExisteNoBD(loginPar, bdPar)
 	achou := bdPar.BD.Where("login = ?", loginPar).First(&ACLUser)
@@ -220,5 +233,128 @@ func AtivaUsuarioPorLogin(loginPar string, bdPar bancoDeDados.BDCon) error {
 	return erroRetorno
 }
 
-// Fazer o ativar usuario removido logicamente.
-// Listar os usuáarios.
+// AlteraUsuario : altera os dados do usuário no BD
+func AlteraUsuario(ACLUser ACLUsuario, bdPar bancoDeDados.BDCon) error {
+	var (
+		// achou int
+		ACLUserLocal ACLUsuario
+		erroRetorno  error
+	)
+
+	validate = validator.New()
+
+	erroRetorno = validate.Struct(ACLUser)
+
+	log.Println("[MAUINFAUS006 | modelAclUsuario.go|AlteraUsuario N.06] Valor do ACLUser:", ACLUser)
+	if erroRetorno != nil {
+		log.Println("[MAUINFAUS005 | modelAclUsuario.go|AlteraUsuario N.05] Valor ACLUser:", ACLUser)
+		log.Println("[MAUINFAUS004 | modelAclUsuario.go|AlteraUsuario N.04] Erro de campo obrigatório:", erroRetorno)
+		return erroRetorno
+	}
+
+	// var Achou = 0
+	// Achou = VerificaSeLoginJaExisteNoBD(ACLUser.Login, bd)
+
+	tx := bdPar.BD.Begin()
+	Achou := tx.Where("login = ?", ACLUser.Login).First(&ACLUserLocal)
+
+	if Achou.RowsAffected == 0 {
+		msgErro = "[MAUINFAUS003 |  modelAclUsuario.go|AlteraUsuario N.03] Usuário não existe: " + ACLUser.Login
+		log.Println(msgErro)
+		erroRetorno = errors.New(msgErro)
+		return erroRetorno
+	}
+	UsuarioID := ACLUserLocal.UsuarioID
+	ACLUserLocal = ACLUser
+	ACLUserLocal.UsuarioID = UsuarioID
+
+	// result := tx.Update(&ACLUser).Where("login = ?", ACLUser.Login)
+	result := tx.Save(&ACLUserLocal)
+	log.Println("[MAUINFAUS002 |  modelAclUsuario.go|AlteraUsuario N.02] linhas afetadas:", result.RowsAffected)
+
+	if result.RowsAffected == 0 {
+		msgErro = "[MAUINFAUS001 |  modelAclUsuario.go|AlteraUsuario N.01] Erro ao alterar no usuário"
+		log.Println(msgErro)
+		erroRetorno = errors.New(msgErro)
+		tx.Rollback()
+		return erroRetorno
+	}
+
+	tx.Commit()
+
+	return nil
+}
+
+//BuscaTodosUsuario : Busca todos os dados dos usuários
+func BuscaTodosUsuario(bdPar bancoDeDados.BDCon) (ACLRetorno []ACLUsuario, err error) {
+	var (
+		erroRetorno error
+	)
+	tx := bdPar.BD.Begin()
+	registrosEncontrados := tx.Find(&ACLRetorno)
+	if registrosEncontrados.RowsAffected == 0 {
+		msgErro = "[MAUERRBTU001 |  modelAclUsuario.go|BuscaTodosUsuario N.01] Nenhum usuário encontrado"
+		log.Println(msgErro)
+		erroRetorno = errors.New(msgErro)
+		tx.Rollback()
+		return nil, erroRetorno
+	}
+
+	tx.Commit()
+
+	return ACLRetorno, nil
+
+}
+
+//BuscaTodosUsuariosAtivos : Busca todos os dados dos usuários ativos
+func BuscaTodosUsuariosAtivos(bdPar bancoDeDados.BDCon) (ACLRetorno []ACLUsuario, err error) {
+
+	var (
+		erroRetorno error
+	)
+
+	tx := bdPar.BD.Begin()
+	registrosEncontrados := tx.Where("userativo = ?", 1).Find(&ACLRetorno)
+	if registrosEncontrados.RowsAffected == 0 {
+		msgErro = "[MAUERRBTA001 |  modelAclUsuario.go|BuscaTodosUsuariosAtivos N.01] Nenhum usuário ativo encontrado"
+		log.Println(msgErro)
+		erroRetorno = errors.New(msgErro)
+		tx.Rollback()
+		return nil, erroRetorno
+	}
+
+	tx.Commit()
+
+	return ACLRetorno, nil
+
+}
+
+//BuscaUsuarioPorLogin : Busca os dados do usuário ativos por login
+func BuscaUsuarioPorLogin(loginPAR string, bdPar bancoDeDados.BDCon) (ACLRetorno ACLUsuario, err error) {
+
+	var (
+		ACLUserLocal ACLUsuario
+		erroRetorno  error
+	)
+
+	tx := bdPar.BD.Begin()
+	registrosEncontrados := tx.Where("login = ? AND userativo = ?", loginPAR, 1).Find(&ACLUserLocal)
+	if registrosEncontrados.RowsAffected == 0 {
+		log.Println("[MAUERRBTL002 |  modelAclUsuario.go|BuscaUsuarioPorLogin N.02] loginPAR:", loginPAR)
+		msgErro = "[MAUERRBTL001 |  modelAclUsuario.go|BuscaUsuarioPorLogin N.01] Nenhum usuário ativo encontrado"
+		log.Println(msgErro)
+		erroRetorno = errors.New(msgErro)
+		tx.Rollback()
+		return ACLRetorno, erroRetorno
+	}
+
+	tx.Commit()
+
+	log.Println("[MAUERRBTL003 |  modelAclUsuario.go|BuscaUsuarioPorLogin N.03] Valor do ACLUserLocal.login: ", ACLUserLocal.Login)
+	ACLRetorno = ACLUserLocal
+
+	return ACLUserLocal, nil
+
+}
+
+//TODO: liberar Login

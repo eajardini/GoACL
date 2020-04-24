@@ -5,16 +5,21 @@ import (
 	"os"
 	"time"
 
-	bd "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
+	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
 
 	cors "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	bancodados bd.BDCon
-	r          *gin.Engine
+	bd bancoDeDados.BDCon
+	r  *gin.Engine
 )
+
+func ConfiguraBD() {
+	bd.ConfiguraStringDeConexao("./config/ConfigBancoDados.toml")
+	bd.IniciaConexao()
+}
 
 func ConfiguraGin(r *gin.Engine) {
 	r.Use(gin.Logger())
@@ -38,10 +43,11 @@ func IniciaRouter() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		port = ":8211"
+		port = ":8211" //acl
 	}
 	r = gin.Default()
 	ConfiguraGin(r)
+	ConfiguraBD()
 	//************
 	//**** Rotas
 	//************

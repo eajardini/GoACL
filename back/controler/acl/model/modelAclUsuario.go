@@ -11,6 +11,11 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// TODO: fazer rotina que cria automaticamente um
+// 		grupo com o nome do usuario para dar direito
+//		pessoal do usuário poder acessar os grupos alem
+//		daqueles padrões do do grupo que ele está inserido
+
 var (
 	// bd          bancoDeDados.BDCon
 	msgErro string

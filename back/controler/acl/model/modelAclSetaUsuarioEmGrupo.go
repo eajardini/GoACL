@@ -27,7 +27,8 @@ type RespUsuario struct {
 	UsuarioID int64
 }
 
-// TODO: fazer rotina para cadastrar usuário no grupo
+// TODO: fazer rotina para remover usuário no grupo
+// 		 : fazer rotina para atualizar direito de acesso do crupo aos menus
 
 // InsereUsuarioEmGrupo : inclui usuario em um grupo
 func InsereUsuarioEmGrupo(loginPar string, codigoGrupoPar string, bdPar bancoDeDados.BDCon) error {
@@ -54,14 +55,17 @@ func InsereUsuarioEmGrupo(loginPar string, codigoGrupoPar string, bdPar bancoDeD
 		return erroLocal
 	}
 
-	numerosDeRegistrosCriados = bdPar.BD.Create(&ACLUsuarioGrupoLocal)
+	tx := bdPar.BD.Begin()
+	numerosDeRegistrosCriados = tx.Create(&ACLUsuarioGrupoLocal)
 
 	if numerosDeRegistrosCriados.RowsAffected == 0 {
 		mensagemDeErro = "[MSUERRIUG003 | modelAclSetaUsuarioEmGrupo.go|InsereUsuarioEmGrupo003] Problema em adicionar usuário ao grupo" + erroLocal.Error()
 		log.Println(mensagemDeErro)
 		erroLocal = errors.New(mensagemDeErro)
+		tx.Rollback()
 		return erroLocal
 	}
 
+	tx.Commit()
 	return erroLocal
 }

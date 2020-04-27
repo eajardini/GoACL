@@ -80,11 +80,19 @@ func TestGinFazRequisicaoUsuarioEmGrupo(t *testing.T) {
 	dataAtual := time.Now()
 	novoLogin := "al" + dataAtual.Format("02/01/200615:04:05")
 	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
-
 	novoGrupoA := "am" + dataAtual.Format("02/01/200615:04:05")
 	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "09/12/2023", 0, "Grupo Criado com Sucesso")
 
 	GinFazRequisicaoUsuarioEmGrupo(t, novoLogin, novoGrupoA, "[ASUINFIUG001 | SetaUsuarioEmGrupo.go|InsereUsuarioEmGrupo001] Usuário inserido no Grupo com sucesso")
+
+	dataAtual = time.Now()
+	novoLogin = "an" + dataAtual.Format("02/01/200615:04:05")
+	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	novoGrupoA = "ao" + dataAtual.Format("02/01/200615:04:05")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "09/12/2023", 0, "Grupo Criado com Sucesso")
+
+	GinFazRequisicaoUsuarioEmGrupo(t, novoLogin, novoGrupoA, "[ASUINFIUG001 | SetaUsuarioEmGrupo.go|InsereUsuarioEmGrupo001] Usuário inserido no Grupo com sucesso")
+
 }
 
 // //** SoftdeleteGrupo

@@ -17,7 +17,7 @@ var (
 )
 
 func ConfiguraBD() {
-	bd.ConfiguraStringDeConexao("./config/ConfigBancoDados.toml")
+	bd.ConfiguraStringDeConexao("../config/ConfigBancoDados.toml")
 	bd.IniciaConexao()
 }
 

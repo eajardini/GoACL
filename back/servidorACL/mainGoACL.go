@@ -1,9 +1,12 @@
 package main
 
 import (
-	router "github.com/eajardini/ProjetoGoACL/GoACL/back/servidorACLrouter"
+	"fmt"
+
+	router "github.com/eajardini/ProjetoGoACL/GoACL/back/servidorACL/router"
 )
 
 func main() {
 	router.IniciaRouter()
+	fmt.Println("OLá:")
 }

@@ -212,8 +212,8 @@ func MontaMenu(bdPar bancoDeDados.BDCon) (ACLMenuFromJSON, error) {
 	}
 
 	agora vou atribui cada item de menu da variavel ACLMenuLocal na variavel ACLMenuFromJSONLocais
-	e retornar
-	
+	e retornar sd
+
 	return ACLMenuFromJSONLocais, nil
 
 }

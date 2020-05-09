@@ -39,7 +39,7 @@ export default {
             mobileMenuActive: false,
             menu : [
                    {
-                    label: 'Menu Hierarchy', icon: 'pi pi-fw pi-cog',
+                    label: 'Hierarquia de Menu', icon: 'pi pi-fw pi-cog',
                     items: [
                         {
                             label: 'Submenu 1', icon: 'pi pi-fw pi-bars',

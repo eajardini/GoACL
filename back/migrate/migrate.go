@@ -21,6 +21,7 @@ func main() {
 	//Realizando a migração das tabelas dos models
 	bd.BD.SingularTable(true)
 	bd.BD.AutoMigrate(&modelacl.ACLUsuario{}, &modelacl.ACLGrupo{}, &modelacl.ACLUsuarioGrupo{})
+	bd.BD.AutoMigrate(&modelacl.ACLMenu{})
 
 	log.Println("[migrate.go|main N.01] Tabelas criado com sucesso!")
 }

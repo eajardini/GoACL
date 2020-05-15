@@ -1,5 +1,7 @@
 [Principal]
 modo = "Desenvolvimento"
+caminhoMenuJSON = "../config/menu.json"
+caminhoMensagemErroJSON = "../config/mensagemDeErros.json"
 
 
 [BancoDeDados]

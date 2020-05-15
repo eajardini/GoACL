@@ -24,5 +24,8 @@ func ConfiguraACL() {
 		acl.POST("/ReverteSoftDeleteGrupo", aclcontroler.ReverteSoftDeleteGrupo)
 		acl.DELETE("/SoftDeleteGrupo", aclcontroler.SoftDeleteGrupo)
 		acl.GET("/ListaTodosOsGrupos", aclcontroler.ListaTodosOsGrupos)
+
 	}
+	//Abre a página principal.
+	r.GET("/", aclcontroler.MontaMenu)
 }

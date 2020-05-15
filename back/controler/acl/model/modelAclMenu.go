@@ -55,6 +55,27 @@ type ACLMenuJSON struct {
 	DataTeste        string `json:"DataTeste"`
 }
 
+//ItemsNivel1 : Eu aproveitei rotina que já havia feito anteriormente
+type ItemsNivel1 struct {
+	Label string        `json:"label"`
+	Icone string        `json:"icone"`
+	Items []ItemsNivel2 `json:"items"`
+}
+
+//ItemsNivel2 : zz
+type ItemsNivel2 struct {
+	Label string        `json:"label"`
+	Icone string        `json:"icone"`
+	Items []ItemsNivel3 `json:"items"`
+}
+
+//ItemsNivel3 : zz
+type ItemsNivel3 struct {
+	Label string `json:"label"`
+	Icone string `json:"icone"`
+	To    string `json:"to"`
+}
+
 //CarregaMenuDoJSON : carrega o menu de JSON que sta no arquivo ./config/menu.json
 func CarregaMenuDoJSON(caminho string) (ACLMenuFromJSON, error) {
 	var (
@@ -107,6 +128,7 @@ func InsereNoBDMenuDoJSON(ACLMenuFromJSONPar ACLMenuFromJSON, bdPar bancoDeDados
 		qtdadeRegistrosAchados int
 	)
 	tx := bdPar.BD.Begin()
+
 	for _, regN1 := range ACLMenuFromJSONPar {
 		//log.Println("Código Nivel 1:", regN1.Codigo, " CódigoPai Nível 1:", regN1.Codigopai, " Label Nível 1:", regN1.Label)
 		bdPar.BD.Table("acl_menu").Where("codigo = ?", regN1.Codigo).Count(&qtdadeRegistrosAchados)
@@ -179,14 +201,22 @@ func InsereNoBDMenuDoJSON(ACLMenuFromJSONPar ACLMenuFromJSON, bdPar bancoDeDados
 }
 
 //MontaMenu : Retorna o menu já na ordem para ser exibido
-func MontaMenu(bdPar bancoDeDados.BDCon) (ACLMenuFromJSON, error) {
+func MontaMenu(bdPar bancoDeDados.BDCon) ([]ItemsNivel1, error) {
 	var (
-		ACLMenuFromJSONLocais     ACLMenuFromJSON
-		ACLMenuLocal              ACLMenu
+		// ACLMenuFromJSONLocais     ACLMenuFromJSON
+		// itensDaTabelaMenu         []modelmenu.ItensDaTabelaMenu
+		// ItemsNivel1Local          ItemsNivel1
+		// ItemsNivel1Locais         []ItemsNivel1
+		menuLocal                 []ItemsNivel1
+		menuItemNivel1            ItemsNivel1
+		menuItemNivel2            ItemsNivel2
+		menuItemNivel3            ItemsNivel3
+		ACLMenuLocais             []ACLMenu
 		sql                       string
 		erroRetorno               error
 		msgErro                   string
-		qtdadeRegistrosRetornados int64
+		qtdadeRegistrosRetornados *gorm.DB
+		posN1, posN2              int
 	)
 	sql = `
 				WITH RECURSIVE submenus AS (
@@ -203,17 +233,47 @@ func MontaMenu(bdPar bancoDeDados.BDCon) (ACLMenuFromJSON, error) {
 			ORDER BY Itens_Menu;
 	`
 
-	bdPar.BD.Raw(sql).Scan(&ACLMenuLocal).Count(&qtdadeRegistrosRetornados)
-	if qtdadeRegistrosRetornados == 0 {
+	qtdadeRegistrosRetornados = bdPar.BD.Raw(sql).Scan(&ACLMenuLocais) //.Count(&qtdadeRegistrosRetornados)
+
+	if qtdadeRegistrosRetornados.RowsAffected == 0 {
 		msgErro = "[MAMERRMTM001 | modelAclMenu.go|MontaMenu N.01] Não foi encontrado nenhum item de menu"
-		log.Println(msgErro)
 		erroRetorno = errors.New(msgErro)
 		return nil, erroRetorno
 	}
 
-	agora vou atribui cada item de menu da variavel ACLMenuLocal na variavel ACLMenuFromJSONLocais
-	e retornar sd
+	posN1 = -1
+	posN2 = -1
 
-	return ACLMenuFromJSONLocais, nil
+	for _, itensMenu := range ACLMenuLocais {
+		if itensMenu.Nivel == 1 {
+			posN1++
+
+			menuItemNivel1 = ItemsNivel1{
+				Label: itensMenu.Label,
+			}
+
+			menuLocal = append(menuLocal, menuItemNivel1)
+			posN2 = -1
+
+		} else if itensMenu.Nivel == 2 {
+			posN2++
+			menuItemNivel2 = ItemsNivel2{
+				Label: itensMenu.Label,
+			}
+			menuLocal[posN1].Items = append(menuLocal[posN1].Items, menuItemNivel2)
+
+		} else if itensMenu.Nivel == 3 {
+
+			menuItemNivel3 = ItemsNivel3{
+				Label: itensMenu.Label,
+				To:    itensMenu.To.String,
+			}
+			menuLocal[posN1].Items[posN2].Items = append(menuLocal[posN1].Items[posN2].Items, menuItemNivel3)
+
+		}
+	}
+
+	log.Println("[modelAclMenu.go|MontaMenu N.04|INFO] valor menuLocal:", menuLocal)
+	return menuLocal, nil
 
 }

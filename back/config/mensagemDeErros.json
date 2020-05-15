@@ -1,0 +1,15 @@
+[
+{"CodigoErro":0, "MensagemErroPort":"0 - Erro indefinido.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":1, "MensagemErroPort":"1 - Erro ao ler arquivo.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":2, "MensagemErroPort":"2 - Erro de realizar Unmarshal em estrutura.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
+{"CodigoErro":21, "MensagemErroPort":"21 - Usuário não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
+{"CodigoErro":41, "MensagemErroPort":"41 - Item do Menu não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
+{"CodigoErro":91, "MensagemErroPort":"91 - Nenhum registro de Mensagem de Erro encontrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":92, "MensagemErroPort":"92 - Código de Mensagem de Erro já cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":93, "MensagemErroPort":"93 - Código de Mensagem de Erro não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":94, "MensagemErroPort":"94 - Erro ao inserir uma nova mensagem.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"}
+
+]

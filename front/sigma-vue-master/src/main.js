@@ -75,6 +75,9 @@ import '@fullcalendar/daygrid/main.min.css';
 import '@fullcalendar/timegrid/main.min.css';
 import './assets/layout/layout.scss';
 
+import "./plugins/axios"
+
+
 Vue.use(ToastService);
 Vue.directive('tooltip', Tooltip);
 

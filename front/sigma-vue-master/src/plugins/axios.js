@@ -9,8 +9,8 @@ Vue.use({
     // Vue.prototype.$http = axios  
     // Vue.prototype.$httpBaseURL = process.env.NODE_ENV === 'production' ? 'http://localhost:8081' : 'http://localhost:8081'
 
-    Vue.prototype.$http = axios.create({
-      baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:8081' : 'http://localhost:8081',
+    Vue.prototype.$acl = axios.create({
+      baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:20100/' : 'http://localhost:20100/',
       
     })   
 

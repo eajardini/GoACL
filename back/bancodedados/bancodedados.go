@@ -23,7 +23,9 @@ type SysConfig struct {
 
 //principalConfig : zz
 type principalConfig struct {
-	Modo string
+	Modo                    string `toml:"modo"`
+	CaminhoMenuJSON         string `toml:"caminhoMenuJSON"`
+	CaminhoMensagemErroJSON string `toml:"caminhoMensagemErroJSON"`
 }
 
 //BancoDeDados : zz
@@ -140,4 +142,9 @@ func (bdcon *BDCon) ExecutaMigrate(schemaSQL []byte) error {
 	}
 
 	return err
+}
+
+//RetornaCaminhoMSGErros :
+func (bdcon *BDCon) RetornaCaminhoMSGErros() string {
+	return sysConfig.Principal.CaminhoMensagemErroJSON
 }

@@ -83,10 +83,10 @@ func CriaNovoUsuario(ACLUser ACLUsuario, bdPar bancoDeDados.BDCon) error {
 
 	erroRetorno = validate.Struct(ACLUser)
 
-	log.Println("[modelAclUsuario.go|CriaNovousuario N.06] Valor do ACLUser:", ACLUser)
+	// log.Println("[modelAclUsuario.go|CriaNovousuario N.06] Valor do ACLUser:", ACLUser)
 	if erroRetorno != nil {
-		log.Println("[modelAclUsuario.go|CriaNovousuario N.05] Valor ACLUser:", ACLUser)
-		log.Println("[modelAclUsuario.go|CriaNovousuario N.04] Erro de campo obrigatório:", erroRetorno)
+		log.Println("[modelAclUsuario.go|CriaNovousuario| ERRO 005] Valor ACLUser:", ACLUser)
+		log.Println("[modelAclUsuario.go|CriaNovousuario| ERRO 004] Erro de campo obrigatório:", erroRetorno)
 		return erroRetorno
 	}
 
@@ -104,7 +104,7 @@ func CriaNovoUsuario(ACLUser ACLUsuario, bdPar bancoDeDados.BDCon) error {
 
 	tx := bdPar.BD.Begin()
 	result := tx.Create(&ACLUser)
-	log.Println("[MAUINFCNU002 | modelAclUsuario.go|CriaNovousuario N.02] linhas afetadas:", result.RowsAffected)
+	// log.Println("[MAUINFCNU002 | modelAclUsuario.go|CriaNovousuario N.02] linhas afetadas:", result.RowsAffected)
 
 	if result.RowsAffected == 0 {
 		msgErro = "[MAUERRCNU001 | modelAclUsuario.go|CriaNovousuario N.01] Erro ao criar no usuário"

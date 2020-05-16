@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	ErrosDoSistema []erroMSG.ErroMSG
+	ErrosDoSistema []erroMSG.LIBErroMSGRetorno
 )
 
 //InsereErro :

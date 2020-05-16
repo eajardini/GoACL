@@ -15,7 +15,7 @@ type LIBErroMSGSGBD struct {
 	CodigoErro       int64  `gorm:"type:bigint; unique; not null; column:codigoerro" json:"CodigoErro"`
 	MensagemErroPort string `gorm:"type:varchar(100); column:mensagemerroport" json:"MensagemErroPort"`
 	MensagemErroIng  string `gorm:"type:varchar(100); column:mensagemerroing" json:"MensagemErroIng"`
-	MensagemErroEsp  string `gorm:"type:varchar(100); column:mensagemerroesp" json:"MensagemErroEsp`
+	MensagemErroEsp  string `gorm:"type:varchar(100); column:mensagemerroesp" json:"MensagemErroEsp"`
 }
 
 // LIBErroMSGSGBDJSON : Estrutura de gerenciar os erros do SGBD
@@ -33,7 +33,7 @@ type LIBErroMSGRetorno struct {
 }
 
 var (
-	LIBErroMSGSGBDMapGlobal map[int64]LIBErroMSGSGBD
+	libErroMSGSGBDMapGlobal map[int64]LIBErroMSGSGBD
 )
 
 //InsereErroNoSGBD : criar os erros do sistema
@@ -48,7 +48,10 @@ func InsereErroNoSGBD(codigoErroPar int64, MensagemErroPortPar string, MensagemE
 	)
 
 	bdPar.BD.Table("lib_erro_msgsgbd").Where("codigoerro = ?", codigoErroPar).Count(&qtdadeRegistrosAchados)
+	// erroRetorno.Erro = bdPar.BD.Where("codigoerro = ?", codigoErroPar).Find(&LIBErroMSGSGBDLocal).Error
 	if qtdadeRegistrosAchados > 0 {
+		// if erroRetorno.Erro != nil {
+
 		modulo = "[modelLibError.go|InsereErro|ERRO 001] "
 		LIBErroMSGSGBDLocal.CodigoErro = 92
 		LIBErroMSGSGBDLocal.MensagemErroPort = modulo + "92 - Mensagem de Erro já cadastrado"
@@ -112,7 +115,7 @@ func CarregaMensagemDoJSON(caminhoArquivoJSONPar string, bdPar bancoDeDados.BDCo
 		mensagensErrosDoArquivo []byte
 		modulo                  string
 		qtdadeRegistrosAchados  int
-		// qtdadeRegistroCriados   *gorm.DB
+		// qtdadeRegistroCriados *gorm.DB
 	)
 
 	mensagensErrosDoArquivo, LIBErroMSGRetornoLocal.Erro = ioutil.ReadFile(caminhoArquivoJSONPar)
@@ -167,8 +170,30 @@ func CarregaTodosAsMensagensDeErro(bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
 	for _, reg := range LIBErroMSGSGBDLocais {
 		LIBErroMSGSGBDMapLocal[reg.CodigoErro] = reg
 	}
-	LIBErroMSGSGBDMapGlobal = LIBErroMSGSGBDMapLocal
+	libErroMSGSGBDMapGlobal = LIBErroMSGSGBDMapLocal
 	return erroRetorno
+}
+
+// BuscaMensagemPeloCodigo : zz
+func BuscaMensagemPeloCodigo(CodigoMSGPar int64, moduloPar string) LIBErroMSGRetorno {
+	var (
+		libErroMSGRetornoLocal LIBErroMSGRetorno
+	)
+
+	for _, reg := range libErroMSGSGBDMapGlobal {
+		if CodigoMSGPar == reg.CodigoErro {
+			libErroMSGRetornoLocal.CodigoErro = reg.CodigoErro
+			libErroMSGRetornoLocal.Erro = errors.New(moduloPar + reg.MensagemErroPort)
+		}
+	}
+
+	//Caso não encontre nenhum erro já cadastrado, retorna o msg de erro não encontrada
+	if libErroMSGRetornoLocal.CodigoErro == 0 {
+		libErroMSGRetornoLocal.CodigoErro = libErroMSGSGBDMapGlobal[0].CodigoErro
+		libErroMSGRetornoLocal.Erro = errors.New(moduloPar + libErroMSGSGBDMapGlobal[0].MensagemErroPort)
+	}
+
+	return libErroMSGRetornoLocal
 }
 
 //*** Lista de erros definidos ***

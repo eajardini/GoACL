@@ -1,7 +1,6 @@
 package libtestes
 
 import (
-	"fmt"
 	"testing"
 
 	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
@@ -73,7 +72,33 @@ func TestCarregaTodosAsMensagensDeErro(t *testing.T) {
 	defer bd.FechaConexao()
 
 	erroRetorno = modelLib.CarregaTodosAsMensagensDeErro(bd)
-	fmt.Println("[libError_test.go|TestCarregaTodosAsMensagensDeErro 001] Valor LIBErroMSGSGBDMapGlobal:", modelLib.LIBErroMSGSGBDMapGlobal[0].MensagemErroPort)
+	// fmt.Println("[libError_test.go|TestCarregaTodosAsMensagensDeErro 001] Valor LIBErroMSGSGBDMapGlobal:", modelLib.libErroMSGSGBDMapGlobal[0].MensagemErroPort)
 
 	assert.Equal(t, nil, erroRetorno.Erro)
+}
+
+func TestBuscaMensagemPeloCodigo(t *testing.T) {
+	var (
+		erroRetorno modelLib.LIBErroMSGRetorno
+	)
+
+	bd.ConfiguraStringDeConexao("../../../config/ConfigBancoDados.toml")
+	bd.IniciaConexao()
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	erroRetorno = modelLib.CarregaTodosAsMensagensDeErro(bd)
+	// fmt.Println("[libError_test.go|TestCarregaTodosAsMensagensDeErro 001] Valor LIBErroMSGSGBDMapGlobal:", modelLib.libErroMSGSGBDMapGlobal[0].MensagemErroPort)
+	modulo := "[libError_test.go|TestBuscaMensagemPeloCodigo|ERRO 001] "
+	erroRetorno = modelLib.BuscaMensagemPeloCodigo(1, modulo)
+	assert.Equal(t, modulo+"1 - Erro ao ler arquivo.", erroRetorno.Erro.Error())
+
+	erroRetorno = modelLib.BuscaMensagemPeloCodigo(41, modulo)
+	assert.Equal(t, modulo+"41 - Item do Menu não cadastrado.", erroRetorno.Erro.Error())
+
+	erroRetorno = modelLib.BuscaMensagemPeloCodigo(92, modulo)
+	assert.Equal(t, modulo+"92 - Código de Mensagem de Erro já cadastrado.", erroRetorno.Erro.Error())
+
+	erroRetorno = modelLib.BuscaMensagemPeloCodigo(1192, modulo)
+	assert.Equal(t, modulo+"0 - Erro indefinido.", erroRetorno.Erro.Error())
 }

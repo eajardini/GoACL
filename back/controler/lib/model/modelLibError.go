@@ -28,8 +28,9 @@ type LIBErroMSGSGBDJSON struct {
 
 // LIBErroMSGRetorno : Estrutura para ser usada nos retornos de erros do sistema
 type LIBErroMSGRetorno struct {
-	CodigoErro int64
-	Erro       error
+	CodigoErro int64  `json:"CodigoErro"`
+	Erro       error  `json:"Erro"`
+	Mensagem   string `json:"Mensagem"`
 }
 
 var (
@@ -37,7 +38,7 @@ var (
 )
 
 //InsereErroNoSGBD : criar os erros do sistema
-func InsereErroNoSGBD(codigoErroPar int64, MensagemErroPortPar string, MensagemErroIngPar string,
+func (libError *LIBErroMSGSGBD) InsereErroNoSGBD(codigoErroPar int64, MensagemErroPortPar string, MensagemErroIngPar string,
 	MensagemErroEspPar string, bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
 	var (
 		LIBErroMSGSGBDLocal    LIBErroMSGSGBD
@@ -87,7 +88,7 @@ func InsereErroNoSGBD(codigoErroPar int64, MensagemErroPortPar string, MensagemE
 //Foi criada por que quando se tenta reutilizar uma variável que é Model o Gorm não consegue
 // Criar uma nova Chave Primária. Assim, aqui só recebe os dados, atribui a variável Model
 // e executa o Create
-func ExecutaCreateStruct(LIBErroMSGSGBDPar LIBErroMSGSGBD, txPar *gorm.DB) LIBErroMSGRetorno {
+func (libError *LIBErroMSGSGBD) ExecutaCreateStruct(LIBErroMSGSGBDPar LIBErroMSGSGBD, txPar *gorm.DB) LIBErroMSGRetorno {
 	var (
 		LIBErroMSGRetornoLocal LIBErroMSGRetorno
 		LIBErroMSGSGBDLocal    LIBErroMSGSGBD
@@ -108,7 +109,7 @@ func ExecutaCreateStruct(LIBErroMSGSGBDPar LIBErroMSGSGBD, txPar *gorm.DB) LIBEr
 }
 
 // CarregaMensagemDoJSON :
-func CarregaMensagemDoJSON(caminhoArquivoJSONPar string, bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
+func (libError *LIBErroMSGSGBD) CarregaMensagemDoJSON(caminhoArquivoJSONPar string, bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
 	var (
 		LIBErroMSGRetornoLocal  LIBErroMSGRetorno
 		LIBErroMSGSGBDLocais    []LIBErroMSGSGBD
@@ -139,7 +140,7 @@ func CarregaMensagemDoJSON(caminhoArquivoJSONPar string, bdPar bancoDeDados.BDCo
 	for _, reg := range LIBErroMSGSGBDLocais {
 		bdPar.BD.Table("lib_erro_msgsgbd").Where("codigoerro = ?", reg.CodigoErro).Count(&qtdadeRegistrosAchados)
 		if qtdadeRegistrosAchados == 0 {
-			LIBErroMSGRetornoLocal = ExecutaCreateStruct(reg, tx)
+			LIBErroMSGRetornoLocal = libError.ExecutaCreateStruct(reg, tx)
 		}
 	}
 	tx.Commit()
@@ -147,7 +148,7 @@ func CarregaMensagemDoJSON(caminhoArquivoJSONPar string, bdPar bancoDeDados.BDCo
 }
 
 //CarregaTodosAsMensagensDeErro :
-func CarregaTodosAsMensagensDeErro(bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
+func (libError *LIBErroMSGSGBD) CarregaTodosAsMensagensDeErro(bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
 	var (
 		LIBErroMSGSGBDLocal    LIBErroMSGSGBD
 		LIBErroMSGSGBDLocais   []LIBErroMSGSGBD
@@ -175,7 +176,7 @@ func CarregaTodosAsMensagensDeErro(bdPar bancoDeDados.BDCon) LIBErroMSGRetorno {
 }
 
 // BuscaMensagemPeloCodigo : zz
-func BuscaMensagemPeloCodigo(CodigoMSGPar int64, moduloPar string) LIBErroMSGRetorno {
+func (libError *LIBErroMSGSGBD) BuscaMensagemPeloCodigo(CodigoMSGPar int64, moduloPar string) LIBErroMSGRetorno {
 	var (
 		libErroMSGRetornoLocal LIBErroMSGRetorno
 	)
@@ -184,6 +185,7 @@ func BuscaMensagemPeloCodigo(CodigoMSGPar int64, moduloPar string) LIBErroMSGRet
 		if CodigoMSGPar == reg.CodigoErro {
 			libErroMSGRetornoLocal.CodigoErro = reg.CodigoErro
 			libErroMSGRetornoLocal.Erro = errors.New(moduloPar + reg.MensagemErroPort)
+			libErroMSGRetornoLocal.Mensagem = libErroMSGRetornoLocal.Erro.Error()
 		}
 	}
 
@@ -191,6 +193,7 @@ func BuscaMensagemPeloCodigo(CodigoMSGPar int64, moduloPar string) LIBErroMSGRet
 	if libErroMSGRetornoLocal.CodigoErro == 0 {
 		libErroMSGRetornoLocal.CodigoErro = libErroMSGSGBDMapGlobal[0].CodigoErro
 		libErroMSGRetornoLocal.Erro = errors.New(moduloPar + libErroMSGSGBDMapGlobal[0].MensagemErroPort)
+		libErroMSGRetornoLocal.Mensagem = libErroMSGRetornoLocal.Erro.Error()
 	}
 
 	return libErroMSGRetornoLocal

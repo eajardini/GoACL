@@ -9,6 +9,7 @@ import (
 
 	aclcontroler "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl"
 	modelacl "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl/model"
+	mensagensErros "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/lib/model"
 	"github.com/gin-gonic/gin"
 
 	"encoding/json"
@@ -31,7 +32,8 @@ import (
 //** 3) Encerre a sessão
 //** 4) Login novamente
 var (
-	bd bancoDeDados.BDCon
+	bd       bancoDeDados.BDCon
+	msgErros mensagensErros.LIBErroMSGRetorno
 	// msgErro     string
 	//erroRetorno error
 )

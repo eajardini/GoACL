@@ -20,7 +20,8 @@ import (
 //** 4) Login novamente
 
 var (
-	bd bancoDeDados.BDCon
+	bd     bancoDeDados.BDCon
+	libMSG modelLib.LIBErroMSGSGBD
 
 // 	msgErro     string
 // 	erroRetorno error
@@ -53,7 +54,7 @@ func TestModelInsereErroNoSGBD(t *testing.T) {
 	bd.AbreConexao()
 	defer bd.FechaConexao()
 
-	erroRetorno = modelLib.InsereErroNoSGBD(0, "0 - Erro indefinido", "msg ingles", "msg espanhol", bd)
+	erroRetorno = libMSG.InsereErroNoSGBD(0, "0 - Erro indefinido", "msg ingles", "msg espanhol", bd)
 
 	if erroRetorno.CodigoErro != 92 {
 		assert.Equal(t, nil, erroRetorno.Erro)
@@ -71,7 +72,7 @@ func TestCarregaTodosAsMensagensDeErro(t *testing.T) {
 	bd.AbreConexao()
 	defer bd.FechaConexao()
 
-	erroRetorno = modelLib.CarregaTodosAsMensagensDeErro(bd)
+	erroRetorno = libMSG.CarregaTodosAsMensagensDeErro(bd)
 	// fmt.Println("[libError_test.go|TestCarregaTodosAsMensagensDeErro 001] Valor LIBErroMSGSGBDMapGlobal:", modelLib.libErroMSGSGBDMapGlobal[0].MensagemErroPort)
 
 	assert.Equal(t, nil, erroRetorno.Erro)
@@ -87,18 +88,18 @@ func TestBuscaMensagemPeloCodigo(t *testing.T) {
 	bd.AbreConexao()
 	defer bd.FechaConexao()
 
-	erroRetorno = modelLib.CarregaTodosAsMensagensDeErro(bd)
+	erroRetorno = libMSG.CarregaTodosAsMensagensDeErro(bd)
 	// fmt.Println("[libError_test.go|TestCarregaTodosAsMensagensDeErro 001] Valor LIBErroMSGSGBDMapGlobal:", modelLib.libErroMSGSGBDMapGlobal[0].MensagemErroPort)
 	modulo := "[libError_test.go|TestBuscaMensagemPeloCodigo|ERRO 001] "
-	erroRetorno = modelLib.BuscaMensagemPeloCodigo(1, modulo)
+	erroRetorno = libMSG.BuscaMensagemPeloCodigo(1, modulo)
 	assert.Equal(t, modulo+"1 - Erro ao ler arquivo.", erroRetorno.Erro.Error())
 
-	erroRetorno = modelLib.BuscaMensagemPeloCodigo(41, modulo)
+	erroRetorno = libMSG.BuscaMensagemPeloCodigo(41, modulo)
 	assert.Equal(t, modulo+"41 - Item do Menu não cadastrado.", erroRetorno.Erro.Error())
 
-	erroRetorno = modelLib.BuscaMensagemPeloCodigo(92, modulo)
+	erroRetorno = libMSG.BuscaMensagemPeloCodigo(92, modulo)
 	assert.Equal(t, modulo+"92 - Código de Mensagem de Erro já cadastrado.", erroRetorno.Erro.Error())
 
-	erroRetorno = modelLib.BuscaMensagemPeloCodigo(1192, modulo)
+	erroRetorno = libMSG.BuscaMensagemPeloCodigo(1192, modulo)
 	assert.Equal(t, modulo+"0 - Erro indefinido.", erroRetorno.Erro.Error())
 }

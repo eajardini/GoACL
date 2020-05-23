@@ -1,5 +1,24 @@
 [
   {
+    "label":"Administração", "codigo":"admi100", "nivel":1,"codigopai":"","icon":"pi pi-fw pi-file",
+    "items": [
+      {
+          "label": "Usuários",  "codigo":"admi110", "nivel":2,"codigopai":"admi100","icon":"pi pi-fw pi-plus",
+          "items": [
+            {  "label": "Manutenção Usuários", "codigo":"admi111", "nivel":3,"codigopai":"admi110", "icon":"pi pi-fw pi-bookmark", "to":"/empt" },
+            {  "label": "Relatório Usuários",  "codigo":"admi112", "nivel":3,"codigopai":"admi110","icon":"pi pi-fw pi-video", "to":"/empt" }
+          ]
+      },
+      {
+          "label": "Grupos","codigo":"admi120", "nivel":2,"codigopai":"admi100","icon":"pi pi-fw pi-trash",        
+          "items": [
+            {  "label": "Manutenção Grupos", "codigo":"admi121", "nivel":3,"codigopai":"admi120","icon":"pi pi-fw pi-bookmark", "to":"/empt" },
+            {  "label": "Relatórios Grupos", "codigo":"admi122", "nivel":3,"codigopai":"admi120","icon":"pi pi-fw pi-video", "to":"/empt" }           
+          ]      
+      }   
+    ]
+  },
+  {
     "label":"Financeiro", "codigo":"finc100", "nivel":1,"codigopai":"","icon":"pi pi-fw pi-file",
     "items": [
       {

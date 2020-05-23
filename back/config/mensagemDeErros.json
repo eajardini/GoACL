@@ -2,14 +2,20 @@
 {"CodigoErro":0, "MensagemErroPort":"0 - Erro indefinido.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 {"CodigoErro":1, "MensagemErroPort":"1 - Erro ao ler arquivo.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 {"CodigoErro":2, "MensagemErroPort":"2 - Erro de realizar Unmarshal em estrutura.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":3, "MensagemErroPort":"3 - Erro ao fazer Bind do JSON.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 
 {"CodigoErro":21, "MensagemErroPort":"21 - Usuário não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 
 {"CodigoErro":41, "MensagemErroPort":"41 - Item do Menu não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":42, "MensagemErroPort":"42 - ID do Menu não localizado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
+{"CodigoErro":61, "MensagemErroPort":"61 - ID do Grupo não localizado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 
 {"CodigoErro":91, "MensagemErroPort":"91 - Nenhum registro de Mensagem de Erro encontrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 {"CodigoErro":92, "MensagemErroPort":"92 - Código de Mensagem de Erro já cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 {"CodigoErro":93, "MensagemErroPort":"93 - Código de Mensagem de Erro não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
-{"CodigoErro":94, "MensagemErroPort":"94 - Erro ao inserir uma nova mensagem.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"}
+{"CodigoErro":94, "MensagemErroPort":"94 - Erro ao inserir uma nova mensagem.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
+{"CodigoErro":120, "MensagemErroPort":"120 - Direitos de Acesso concedidos com sucesso!", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"}
 
 ]

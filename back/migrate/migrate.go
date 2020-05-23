@@ -23,6 +23,7 @@ var (
 	senha                   string
 	dataNow                 *now.Now
 	LIBErroMSGRetornoGlobal modelLIB.LIBErroMSGRetorno
+	libMSG                  modelLIB.LIBErroMSGSGBD
 	modulo                  string
 )
 
@@ -33,7 +34,7 @@ func ConfiguraMensagensDeErro(bdPar bancoDeDados.BDCon) modelLIB.LIBErroMSGRetor
 		modulo                 string
 	)
 
-	LIBErroMSGRetornoLocal = modelLIB.InsereErroNoSGBD(0, "0 - Erro indefinido",
+	LIBErroMSGRetornoLocal = libMSG.InsereErroNoSGBD(0, "0 - Erro indefinido",
 		"Mensagem em Inglês", "Mensagem em Espanhol", bdPar)
 
 	if LIBErroMSGRetornoLocal.CodigoErro != 92 {
@@ -52,7 +53,7 @@ func CarregaMensagensErroDoArquivoJSON(caminhoArquivoJSONPar string, bdPar banco
 		LIBErroMSGRetornoLocal modelLIB.LIBErroMSGRetorno
 		//modulo                 string
 	)
-	LIBErroMSGRetornoLocal = modelLIB.CarregaMensagemDoJSON(caminhoArquivoJSONPar, bdPar)
+	LIBErroMSGRetornoLocal = libMSG.CarregaMensagemDoJSON(caminhoArquivoJSONPar, bdPar)
 	return LIBErroMSGRetornoLocal
 }
 
@@ -67,7 +68,7 @@ func main() {
 	//Realizando a migração das tabelas dos models
 	bd.BD.SingularTable(true)
 	bd.BD.AutoMigrate(&modelACL.ACLUsuario{}, &modelACL.ACLGrupo{}, &modelACL.ACLUsuarioGrupo{})
-	bd.BD.AutoMigrate(&modelACL.ACLMenu{}, modelLIB.LIBErroMSGSGBD{})
+	bd.BD.AutoMigrate(&modelACL.ACLMenu{}, &modelLIB.LIBErroMSGSGBD{}, &modelACL.ACLGrupoAcessaMenu{})
 	log.Println("[migrate.go|main|INFO 001] Tabelas criado com sucesso!")
 
 	//*****Insere as mensagens de erro do sistema *****//

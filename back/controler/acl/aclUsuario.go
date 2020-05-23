@@ -3,6 +3,7 @@ package acl
 import (
 	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
 	modelACL "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl/model"
+	mensagensErros "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/lib/model"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/now"
 )
@@ -13,9 +14,10 @@ type Resposta struct {
 }
 
 var (
-	Resp Resposta
-	erro error
-	bd   bancoDeDados.BDCon
+	Resp   Resposta
+	erro   error
+	bd     bancoDeDados.BDCon
+	libMSG mensagensErros.LIBErroMSGSGBD
 
 // msgErro     string
 // erroRetorno error

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
 	aclcontroler "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl"
 	"github.com/gin-gonic/gin"
 
@@ -28,11 +29,12 @@ import (
 //** 3) Encerre a sessão
 //** 4) Login novamente
 
-// var (
-// 	bd          bancoDeDados.BDCon
+var (
+	bdSetaUsuarioEmgrupo bancoDeDados.BDCon
+
 // 	msgErro     string
 // 	erroRetorno error
-// )
+)
 
 // var ACLUserTest modelacl.ACLUsuario
 
@@ -74,22 +76,26 @@ func GinFazRequisicaoUsuarioEmGrupo(t *testing.T, LoginUsuarioPar string, Codigo
 func TestGinFazRequisicaoUsuarioEmGrupo(t *testing.T) {
 
 	now.TimeFormats = append(now.TimeFormats, "02/01/2006")
-	bd.ConfiguraStringDeConexao("../../../config/ConfigBancoDados.toml")
-	bd.IniciaConexao()
+	bdSetaUsuarioEmgrupo.ConfiguraStringDeConexao("../../../config/ConfigBancoDados.toml")
+	bdSetaUsuarioEmgrupo.IniciaConexao()
+
+	bdSetaUsuarioEmgrupo.AbreConexao()
+	libMSG.CarregaTodosAsMensagensDeErro(bdSetaUsuarioEmgrupo)
+	bdSetaUsuarioEmgrupo.FechaConexao()
 
 	dataAtual := time.Now()
 	novoLogin := "al" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	novoGrupoA := "am" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "09/12/2023", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "09/12/2023", 0, "g", "Grupo Criado com Sucesso")
 
 	GinFazRequisicaoUsuarioEmGrupo(t, novoLogin, novoGrupoA, "[ASUINFIUG001 | SetaUsuarioEmGrupo.go|InsereUsuarioEmGrupo001] Usuário inserido no Grupo com sucesso")
 
 	dataAtual = time.Now()
 	novoLogin = "an" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	novoGrupoA = "ao" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "09/12/2023", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "09/12/2023", 0, "g", "Grupo Criado com Sucesso")
 
 	GinFazRequisicaoUsuarioEmGrupo(t, novoLogin, novoGrupoA, "[ASUINFIUG001 | SetaUsuarioEmGrupo.go|InsereUsuarioEmGrupo001] Usuário inserido no Grupo com sucesso")
 

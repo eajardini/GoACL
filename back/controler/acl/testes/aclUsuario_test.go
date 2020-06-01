@@ -1,17 +1,20 @@
 package acltestes
 
 import (
+	"crypto/md5"
 	"fmt"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl"
 	aclcontroler "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl"
 	modelacl "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl/model"
 	mensagensErros "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/lib/model"
 	"github.com/gin-gonic/gin"
 
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -32,8 +35,9 @@ import (
 //** 3) Encerre a sessão
 //** 4) Login novamente
 var (
-	bd       bancoDeDados.BDCon
-	msgErros mensagensErros.LIBErroMSGRetorno
+	bd        bancoDeDados.BDCon
+	bdUsuario bancoDeDados.BDCon
+	msgErros  mensagensErros.LIBErroMSGRetorno
 	// msgErro     string
 	//erroRetorno error
 )
@@ -59,6 +63,50 @@ func ConfigRouter() *gin.Engine {
 
 	}
 	return r
+}
+
+func TestACLFazAutenticacao(t *testing.T) {
+	var (
+		autenticadoLocal       bool //Se estiver autenticado, retornar true, caso contrario, retornar false
+		senhaLocal             string
+		userACLJSONLocal       modelacl.ACLUsuarioJSON
+		LIBErroMSGRetornoLocal mensagensErros.LIBErroMSGRetorno
+	)
+	// assert := assert.New(t)
+	bd.ConfiguraStringDeConexao("../../../config/ConfigBancoDados.toml")
+	bd.IniciaConexao()
+	bd.AbreConexao()
+	defer bd.FechaConexao()
+
+	libMSG.CarregaTodosAsMensagensDeErro(bd)
+
+	//Garantindo que o sistema vai barrar se um usuário já existir
+	dataAtual := time.Now()
+	novoLoginA := "ap" + dataAtual.Format("02/01/200615:04:05")
+	// ACLUserTest := modelacl.ACLUsuario{Login: novoLoginA, Password: "teste", Datacriacao: dataAtual,
+	// 	Datavalidade: dataAtual, Userbloqueado: 1, Userativo: 1}
+
+	h := md5.New()
+	h.Write([]byte("teste"))
+	senhaLocal = hex.EncodeToString(h.Sum(nil))
+	datavalidade, _ := now.Parse("01/01/0001")
+
+	userACLJSONLocal.Login = novoLoginA
+	userACLJSONLocal.Password = senhaLocal
+	userACLJSONLocal.Datacriacao = dataAtual.Format("02/01/2006")
+	userACLJSONLocal.Datavalidade = datavalidade.String()
+	userACLJSONLocal.Userbloqueado = 0
+	userACLJSONLocal.Userativo = 1
+
+	//Aqui ele tem que criar
+	LIBErroMSGRetornoLocal = acl.NovoUsuarioACL(userACLJSONLocal, bd)
+	assert.Equal(t, LIBErroMSGRetornoLocal.Mensagem, "23 - Usuário cadastrado com sucesso.")
+
+	autenticadoLocal = aclcontroler.FazAutenticacao(novoLoginA, "teste")
+	assert.Equal(t, autenticadoLocal, true)
+
+	autenticadoLocal = aclcontroler.FazAutenticacao(novoLoginA, "te")
+	assert.NotEqual(t, autenticadoLocal, true)
 }
 
 //**Cria novo usuário
@@ -122,7 +170,10 @@ func TestVerificaSeLoginJaExisteNoBD(t *testing.T) {
 // GinFazRequisicao : zz
 func GinFazRequisicao(t *testing.T, login string, password string, datacriacao string,
 	datavalidade string, userbloqueado int, userativo int, ComparacaoRetorno string) {
-	var Resp aclcontroler.Resposta
+	var (
+		// Resp             aclcontroler.Resposta
+		erroRetornoLocal mensagensErros.LIBErroMSGRetorno
+	)
 
 	r := ConfigRouter()
 	w := httptest.NewRecorder()
@@ -135,25 +186,27 @@ func GinFazRequisicao(t *testing.T, login string, password string, datacriacao s
 	req, _ := http.NewRequest("POST", "/acl/NovoUsuario", strings.NewReader(dadosUsuario))
 	r.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
-	json.Unmarshal([]byte(w.Body.String()), &Resp)
-	assert.Equal(t, ComparacaoRetorno, Resp.Mensagem)
+	json.Unmarshal([]byte(w.Body.String()), &erroRetornoLocal.Mensagem)
+	assert.Equal(t, ComparacaoRetorno, erroRetornoLocal.Mensagem)
 }
 
 func TestGinNovoUsuario(t *testing.T) {
 
 	now.TimeFormats = append(now.TimeFormats, "02/01/2006")
-	bd.ConfiguraStringDeConexao("../../../config/ConfigBancoDados.toml")
-	bd.IniciaConexao()
-	// bd.AbreConexao()
-	// defer bd.FechaConexao()
+	bdUsuario.ConfiguraStringDeConexao("../../../config/ConfigBancoDados.toml")
+	bdUsuario.IniciaConexao()
+
+	bdUsuario.AbreConexao()
+	libMSG.CarregaTodosAsMensagensDeErro(bdUsuario)
+	bdUsuario.FechaConexao()
 
 	dataAtual := time.Now()
 	novoLogin := "ab" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 
 	dataAtual = time.Now()
 	novoLogin = "ba" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLogin, "321", "31/12/2020", "", 0, 1, "23 - Usuário cadastrado com sucesso.")
 }
 
 //**Remove Usuário
@@ -208,10 +261,10 @@ func TestGinRemoveUsuario(t *testing.T) {
 	//Cria dois usuários para depois removê-los
 	dataAtual := time.Now()
 	novoLoginA := "d" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	dataAtual = time.Now()
 	novoLoginB := "e" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "23 - Usuário cadastrado com sucesso.")
 
 	GinFazRequisicaoParaRemocao(t, novoLoginA, "[AUSINFRUR002 | aclUsuario|RemoveUsuario 02]  Usuário Removido com Sucesso")
 	GinFazRequisicaoParaRemocao(t, novoLoginB, "[AUSINFRUR002 | aclUsuario|RemoveUsuario 02]  Usuário Removido com Sucesso")
@@ -248,10 +301,10 @@ func TestGinRemoveFisicamenteUsuario(t *testing.T) {
 	//Cria dois usuários para depois removê-los
 	dataAtual := time.Now()
 	novoLoginA := "f" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	dataAtual = time.Now()
 	novoLoginB := "g" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "23 - Usuário cadastrado com sucesso.")
 
 	//Remove os usuários
 	GinFazRequisicaoParaRemocaoFisica(t, novoLoginA, "[AUSINFRFU002 | aclUsuario|RemoveFisicamenteUsuario 02]  Usuário Removido Fisicamente com Sucesso")
@@ -288,10 +341,10 @@ func TestGinAtivaUsuario(t *testing.T) {
 	//Cria dois usuários para depois removê-los Logicamente e depois ativalos
 	dataAtual := time.Now()
 	novoLoginA := "h" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	dataAtual = time.Now()
 	novoLoginB := "i" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "23 - Usuário cadastrado com sucesso.")
 
 	GinFazRequisicaoParaRemocao(t, novoLoginA, "[AUSINFRUR002 | aclUsuario|RemoveUsuario 02]  Usuário Removido com Sucesso")
 	GinFazRequisicaoParaRemocao(t, novoLoginB, "[AUSINFRUR002 | aclUsuario|RemoveUsuario 02]  Usuário Removido com Sucesso")
@@ -332,10 +385,10 @@ func TestGinAlteraUsuario(t *testing.T) {
 	//Cria dois usuários para depois removê-los Logicamente e depois ativalos
 	dataAtual := time.Now()
 	novoLoginA := "a1" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	dataAtual = time.Now()
 	novoLoginB := "a2" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "23 - Usuário cadastrado com sucesso.")
 
 	// //Ativa os usuários
 	GinFazRequisicaoParaAlterarUsuario(t, novoLoginA, "123", "01/05/2015", "10/09/2019", 1, 0, "[AUSINFAUS002 | aclUsuario|AlteraUsuario N.02]Usuário alterado com sucesso")
@@ -419,10 +472,10 @@ func TestGinBuscaUsuarioPorLogin(t *testing.T) {
 	//Cria dois usuários para depois removê-los Logicamente e depois ativalos
 	dataAtual := time.Now()
 	novoLoginA := "pl" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginA, "321", "31/12/2020", "01/01/0001", 0, 1, "23 - Usuário cadastrado com sucesso.")
 	dataAtual = time.Now()
 	novoLoginB := "pm" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "Usuário Criado com Sucesso")
+	GinFazRequisicao(t, novoLoginB, "321", "31/12/2020", "", 0, 1, "23 - Usuário cadastrado com sucesso.")
 
 	GinFazRequisicaoParaBuscarUsuariosPorLogin(t, novoLoginA)
 	GinFazRequisicaoParaBuscarUsuariosPorLogin(t, novoLoginB)

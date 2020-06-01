@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
 	aclcontroler "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl"
@@ -92,11 +93,19 @@ func TestGinFazRequisicaoParaAcessoAoMenu(t *testing.T) {
 	libMSG.CarregaTodosAsMensagensDeErro(bdAcessaMenu)
 	bdAcessaMenu.FechaConexao()
 
-	menuLocal.CodigoGrupo = "af20/05/202021:36:12"
+	dataAtual := time.Now()
+	novoGrupoA := "ap" + dataAtual.Format("02/01/200615:04:05")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "", 0, "g", "Grupo Criado com Sucesso")
+
+	menuLocal.CodigoGrupo = novoGrupoA
 	menuLocal.CodigoMenu = []string{"admi111", "admi112", "ctbl123", "ctbl131"}
 	GinFazRequisicaoParaAcessoAoMenu(t, menuLocal, "120 - Direitos de Acesso concedidos com sucesso!")
 
-	menuLocal.CodigoGrupo = "af20/05/202021:36:12"
+	dataAtual = time.Now()
+	novoGrupoA = "ao" + dataAtual.Format("02/01/200615:04:05")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "", 0, "g", "Grupo Criado com Sucesso")
+
+	menuLocal.CodigoGrupo = novoGrupoA
 	menuLocal.CodigoMenu = []string{"admi111", "admi112", "ctbl131"}
 	GinFazRequisicaoParaAcessoAoMenu(t, menuLocal, "120 - Direitos de Acesso concedidos com sucesso!")
 }

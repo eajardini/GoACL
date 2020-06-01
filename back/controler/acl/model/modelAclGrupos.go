@@ -16,10 +16,16 @@ import (
 type ACLGrupo struct {
 	//gorm.Model
 	GrupoID          uint64       `gorm:"type:bigint; primary_key; type: bigserial ;column:grupoid"`
-	CodigoGrupo      string       `gorm:"type:varchar(20); unique; not null;column:codigogrupo" validate:"required"`
+	CodigoGrupo      string       `gorm:"type:varchar(25); unique; not null;column:codigogrupo" validate:"required"`
 	DescricaoGrupo   string       `gorm:"type:varchar(30);column:descricaogrupo" validate:"required"`
 	DataCriacaoGrupo sql.NullTime `gorm:"type:date;column:datacriacaogrupo" validate:"required"`
-	SoftDelete       int          `gorm:"type:smallint;column:softdelete" validate:"number,gte=0,lte=1"`
+	// Se o softdele valer 0 o registro esta ativo, se valer 1, ele esta removido
+	SoftDelete int `gorm:"type:smallint;column:softdelete" validate:"number,gte=0,lte=1"`
+	//Define se o grupo é criado como grupo originalmente (valor g) ou se é criado originalmente de um usuário (valor u)
+	TipoOrigemGrupo string `gorm:"type:char;not null;default:'g';column:tipoorigemgrupo" validate:"required"`
+	//Declarando chave estrangeira []Nome da struct
+	// FKACLUsuarioGrupo    []ACLUsuarioGrupo
+	// FKACLGrupoAcessaMenu []ACLGrupoAcessaMenu
 }
 
 //ACLGrupoJSON : zz
@@ -29,6 +35,7 @@ type ACLGrupoJSON struct {
 	DataCriacaoGrupo string `json:"DataCriacaoGrupo" `
 	SoftDelete       int    `json:"SoftDelete" validate:"number,gte=0,lte=1"`
 	DataTeste        string `json:"DataTeste"`
+	TipoOrigemGrupo  string `json:"TipoOrigemGrupo" validate:"required"`
 }
 
 //ACLCodigoGrupoJSON : usado para receber parâmetro de busca que neste caso é o Código do Grupo
@@ -158,7 +165,8 @@ func SoftdeleteGrupo(codigoGrupoPar string, bdPar bancoDeDados.BDCon) error {
 	return erroRetorno
 }
 
-//ReverteSoftdeleteGrupo : realiza o softdelete do grupo
+//ReverteSoftdeleteGrupo : reverte o softdelete do grupo. Se o grupo for excluido com
+// softdelete, ele volta a ficar acessível.
 func ReverteSoftdeleteGrupo(codigoGrupoPar string, bdPar bancoDeDados.BDCon) error {
 	var (
 		// achou int

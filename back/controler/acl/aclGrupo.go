@@ -27,6 +27,7 @@ func atribuiDadosGrupo(grupoACLJSON modelACL.ACLGrupoJSON) (modelACL.ACLGrupo, e
 		return grupoACL, erro
 	}
 	grupoACL.SoftDelete = grupoACLJSON.SoftDelete
+	grupoACL.TipoOrigemGrupo = grupoACLJSON.TipoOrigemGrupo
 	return grupoACL, erro
 }
 

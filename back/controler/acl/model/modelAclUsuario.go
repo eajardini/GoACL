@@ -34,6 +34,8 @@ type ACLUsuario struct {
 	Userbloqueado       int       `gorm:"type:integer" json:"userbloqueado" validate:"number,gte=0,lte=1"`
 	Userativo           int       `gorm:"type:integer" json:"userativo" validate:"number,gte=0,lte=1"`
 	LoginAntesDeApagado string    `gorm:"type:varchar(25); column:LoginAntesDeApagado" json:"loginAntesDeApagado"`
+	//Declarando chave estrangeira []Nome da struct
+	// FKACLUsuarioGrupo []ACLUsuarioGrupo
 }
 
 //ACLUsuarioJSON : zz
@@ -49,6 +51,23 @@ type ACLUsuarioJSON struct {
 //ACLUsuarioLoginJSON : usado para receber parâmetro de busca que neste caso é o login do usuário
 type ACLUsuarioLoginJSON struct {
 	Login string `json:"login" validate:"required"`
+}
+
+//FazAutenticacao : recebe o login e senha e confronta com os dados do BD.
+// se coincidir, retorna true; senao retorn false.
+func FazAutenticacao(userNamePar string, passwordPar string, bdPar bancoDeDados.BDCon) bool {
+	var (
+		qtdadeRegistrosAchadosLocal int
+	)
+
+	bdPar.BD.Table("acl_usuario").Where("login = ? and password = ?", userNamePar, passwordPar).Count(&qtdadeRegistrosAchadosLocal)
+
+	if qtdadeRegistrosAchadosLocal == 0 {
+		return false
+	}
+
+	return true
+
 }
 
 // VerificaSeLoginJaExisteNoBD : Faz a verificação se o login existe ou no BD. Se existir retorn 1 senão retorna 0

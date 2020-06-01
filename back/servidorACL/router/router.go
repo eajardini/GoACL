@@ -5,17 +5,20 @@ import (
 	"os"
 	"time"
 
+	jwt "github.com/appleboy/gin-jwt/v2"
 	bancoDeDados "github.com/eajardini/ProjetoGoACL/GoACL/back/bancodedados"
+	"github.com/eajardini/ProjetoGoACL/GoACL/back/controler/lib"
 	mensagensErros "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/lib/model"
 	cors "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	bd       bancoDeDados.BDCon
-	msgErros mensagensErros.LIBErroMSGRetorno
-	r        *gin.Engine
-	libMSG   mensagensErros.LIBErroMSGSGBD
+	bd                   bancoDeDados.BDCon
+	msgErros             mensagensErros.LIBErroMSGRetorno
+	r                    *gin.Engine
+	libMSG               mensagensErros.LIBErroMSGSGBD
+	authMiddlewareGlobal *jwt.GinJWTMiddleware
 )
 
 // ConfiguraBD :
@@ -71,10 +74,16 @@ func IniciaRouter() {
 	ConfiguraGin(r)
 	ConfiguraBD()
 	ConfiguraMSGErros(bd)
+
+	//***********
+	//**** JWT
+	//***********
+	authMiddlewareGlobal = lib.ConfiguraJWT()
+
 	//************
 	//**** Rotas
 	//************
-	ConfiguraACL()
+	ConfiguraACL(authMiddlewareGlobal)
 
 	err := r.Run(port)
 	if err != nil {

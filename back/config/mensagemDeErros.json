@@ -5,6 +5,10 @@
 {"CodigoErro":3, "MensagemErroPort":"3 - Erro ao fazer Bind do JSON.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 
 {"CodigoErro":21, "MensagemErroPort":"21 - Usuário não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":22, "MensagemErroPort":"22 - Houve problema em criar grupo do usuário.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":23, "MensagemErroPort":"23 - Usuário cadastrado com sucesso.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":24, "MensagemErroPort":"24 - Erro ao inserir usuário em grupo.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
 
 {"CodigoErro":41, "MensagemErroPort":"41 - Item do Menu não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 {"CodigoErro":42, "MensagemErroPort":"42 - ID do Menu não localizado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
@@ -16,6 +20,12 @@
 {"CodigoErro":93, "MensagemErroPort":"93 - Código de Mensagem de Erro não cadastrado.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 {"CodigoErro":94, "MensagemErroPort":"94 - Erro ao inserir uma nova mensagem.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
 
-{"CodigoErro":120, "MensagemErroPort":"120 - Direitos de Acesso concedidos com sucesso!", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"}
+{"CodigoErro":120, "MensagemErroPort":"120 - Direitos de Acesso concedidos com sucesso!", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+
+
+{"CodigoErro":141, "MensagemErroPort":"141 - Nome do usuário ou senha não podem estar em branco.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":142, "MensagemErroPort":"142 - A senha deve conter no mínimo 8 caracteres.", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":143, "MensagemErroPort":"ok", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"},
+{"CodigoErro":144, "MensagemErroPort":"nok", "MensagemErroIng":"Mensagem em Inglês", "MensagemErroEsp":"Mensagem em Espanhol"}
 
 ]

@@ -15,13 +15,14 @@ func ConcedeAcessoAoMenu(c *gin.Context) {
 		modulo string
 		// libMSG                      mensagensErros.LIBErroMSGSGBD
 		MsgErrosRetornoLocal        mensagensErros.LIBErroMSGRetorno
+		msgErroLocal                mensagensErros.LIBErroMSGSGBD
 		ACLGrupoAcessaMenuJSONLocal modelACL.ACLGrupoAcessaMenuJSON
 	)
 	MsgErrosRetornoLocal.Erro = c.ShouldBindJSON(&ACLGrupoAcessaMenuJSONLocal)
 
 	if MsgErrosRetornoLocal.Erro != nil {
 		modulo = "[aclGrupoAcessaMenu|ConcedeAcessoAoMenu|ERRO01] "
-		MsgErrosRetornoLocal = libMSG.BuscaMensagemPeloCodigo(3, modulo)
+		MsgErrosRetornoLocal = msgErroLocal.BuscaMensagemPeloCodigo(3, modulo)
 		// MsgErrosRetornoLocal.Mensagem = MsgErrosRetornoLocal.Erro.Error()
 		c.JSON(200, MsgErrosRetornoLocal)
 		return
@@ -39,7 +40,7 @@ func ConcedeAcessoAoMenu(c *gin.Context) {
 		return
 	}
 
-	MsgErrosRetornoLocal = libMSG.BuscaMensagemPeloCodigo(120, "")
+	MsgErrosRetornoLocal = msgErroLocal.BuscaMensagemPeloCodigo(120, "")
 	// MsgErrosRetornoLocal.Mensagem = MsgErrosRetornoLocal.Erro.Error()
 	c.JSON(200, MsgErrosRetornoLocal)
 	/*

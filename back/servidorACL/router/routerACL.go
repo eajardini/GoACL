@@ -1,12 +1,14 @@
 package router
 
 import (
+	jwt "github.com/appleboy/gin-jwt/v2"
 	aclcontroler "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl"
 )
 
 //ConfiguraACL : contem todas as rotas para o controler ACL
-func ConfiguraACL() {
+func ConfiguraACL(authMiddlewarePar *jwt.GinJWTMiddleware) {
 	acl := r.Group("/acl")
+	acl.Use(authMiddlewarePar.MiddlewareFunc())
 	{
 		// rh.GET("/retornafotofuncionario/:idFuncionario", funcionarios.RetornaFotoFuncionario)
 		acl.POST("/NovoUsuario", aclcontroler.NovoUsuario)
@@ -25,7 +27,9 @@ func ConfiguraACL() {
 		acl.DELETE("/SoftDeleteGrupo", aclcontroler.SoftDeleteGrupo)
 		acl.GET("/ListaTodosOsGrupos", aclcontroler.ListaTodosOsGrupos)
 
+		//Menu
+		acl.GET("/MontaMenu", aclcontroler.MontaMenu)
+
 	}
-	//Abre a página principal.
-	r.GET("/", aclcontroler.MontaMenu)
+	r.POST("/login", authMiddlewarePar.LoginHandler)
 }

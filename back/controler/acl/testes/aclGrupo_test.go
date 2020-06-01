@@ -59,7 +59,7 @@ func ConfigRouterGrupo() *gin.Engine {
 
 // GinFazRequisicao : zz
 func GinFazRequisicaoNovoGrupo(t *testing.T, CodigoGrupoPar string, DescricaoGrupoPar string,
-	DataCriacaoGrupo string, SoftDelete int, ComparacaoRetorno string) {
+	DataCriacaoGrupoPar string, SoftDeletePar int, TipoOrigemGrupoPar string, ComparacaoRetorno string) {
 	var Resp aclcontroler.Resposta
 
 	r := ConfigRouterGrupo()
@@ -67,8 +67,8 @@ func GinFazRequisicaoNovoGrupo(t *testing.T, CodigoGrupoPar string, DescricaoGru
 	dadosGrupo := fmt.Sprintf(`
 	{
 		"CodigoGrupo": "%s", "DescricaoGrupo":"%s","DataCriacaoGrupo": "%s",
-		"SoftDelete": %d
-	}`, CodigoGrupoPar, DescricaoGrupoPar, DataCriacaoGrupo, SoftDelete)
+		"SoftDelete": %d, "TipoOrigemGrupo":"%s"
+	}`, CodigoGrupoPar, DescricaoGrupoPar, DataCriacaoGrupoPar, SoftDeletePar, TipoOrigemGrupoPar)
 
 	fmt.Println("Valor dos dadosUsuario:", dadosGrupo)
 	req, _ := http.NewRequest("POST", "/acl/NovoGrupo", strings.NewReader(dadosGrupo))
@@ -88,11 +88,11 @@ func TestGinNovoGrupo(t *testing.T) {
 
 	dataAtual := time.Now()
 	novoGrupoA := "aa" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "", 0, "g", "Grupo Criado com Sucesso")
 
 	dataAtual = time.Now()
 	novoGrupoB := "ab" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoB, novoGrupoB, "09/12/2023", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoB, novoGrupoB, "09/12/2023", 0, "g", "Grupo Criado com Sucesso")
 }
 
 //** SoftdeleteGrupo
@@ -124,11 +124,11 @@ func TestGinSoftDeleteGrupo(t *testing.T) {
 
 	dataAtual := time.Now()
 	novoGrupoA := "ac" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "31/12/2020", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "31/12/2020", 0, "g", "Grupo Criado com Sucesso")
 
 	dataAtual = time.Now()
 	novoGrupoB := "ad" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoB, novoGrupoB, "31/12/2020", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoB, novoGrupoB, "31/12/2020", 0, "g", "Grupo Criado com Sucesso")
 
 	GinSoftDeleteGrupo(t, novoGrupoA, "[AGPINFSDL002 | aclGrupo.go|SoftDelete 02]  Grupo Removido (SoftDelete) com Sucesso")
 	GinSoftDeleteGrupo(t, novoGrupoB, "[AGPINFSDL002 | aclGrupo.go|SoftDelete 02]  Grupo Removido (SoftDelete) com Sucesso")
@@ -164,11 +164,11 @@ func TestGinReveteSoftDeleteGrupo(t *testing.T) {
 
 	dataAtual := time.Now()
 	novoGrupoA := "ae" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "31/12/2020", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoA, novoGrupoA, "31/12/2020", 0, "g", "Grupo Criado com Sucesso")
 
 	dataAtual = time.Now()
 	novoGrupoB := "af" + dataAtual.Format("02/01/200615:04:05")
-	GinFazRequisicaoNovoGrupo(t, novoGrupoB, novoGrupoB, "31/12/2020", 0, "Grupo Criado com Sucesso")
+	GinFazRequisicaoNovoGrupo(t, novoGrupoB, novoGrupoB, "31/12/2020", 0, "g", "Grupo Criado com Sucesso")
 
 	GinSoftDeleteGrupo(t, novoGrupoA, "[AGPINFSDL002 | aclGrupo.go|SoftDelete 02]  Grupo Removido (SoftDelete) com Sucesso")
 	GinSoftDeleteGrupo(t, novoGrupoB, "[AGPINFSDL002 | aclGrupo.go|SoftDelete 02]  Grupo Removido (SoftDelete) com Sucesso")

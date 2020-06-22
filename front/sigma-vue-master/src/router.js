@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Dashboard from './components/Dashboard.vue';
+import login from './components/login.vue';
+import paginaInicial from './components/paginaInicial.vue';
 
 Vue.use(Router);
 
@@ -8,15 +10,19 @@ export default new Router({
 	mode: "history",
 	routes: [
 		{
-			path: '/',
+			path: '/dash',
 			name: 'dashboard',
 			component: Dashboard
-		},
-	
+		},	
 		{
-			path: '/empty',
-			name: 'empty',
-			component: () => import('./components/EmptyPage.vue')
+			path: '/',
+			name: 'paginaInicial',
+			component: paginaInicial
+		},
+		{
+			path: '/login',
+			name: 'login',
+			component: login
 		},
 	
 	],

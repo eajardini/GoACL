@@ -2,8 +2,9 @@
 	<div class="p-grid">
 		<div class="p-col-12">
 			<div class="card">
-				<h1>Empty Page</h1>
-				<p>Use this page to start from scratch and place your custom content.</p>
+			
+				<h1>Página Modelo em Branco</h1>
+        <p>Use este componente para desenvolver as páginas do sistema.</p>
 			</div>
 		</div>
 	</div>

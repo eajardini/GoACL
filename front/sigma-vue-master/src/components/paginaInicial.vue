@@ -3,7 +3,7 @@
     <div class="p-col-12">
       <div class="card">
         <h1>Bem vindo</h1>
-        <p>Sistema Modelo.</p>
+        <p>Sistema Modelo</p>
       </div>
     </div>
   </div>
@@ -13,31 +13,70 @@
 export default {
   data() {
     return {
-     
+      token: ""
     };
   },
-  async mounted() {
-    await this.$acl
-      .get("/acl/MontaMenu")
-      .then(resp => {
-        // this.menu = resp.data.resposta
-        this.menu = resp.data;
-        //   this.menu = [{"label":"Financeiro","items":[{"label":"Contas a Pagar","items":[{"label":"Cadastro"}]}]},{"label":"CRM","items":null}]
-      })
-      .catch(error => {
-        // handle error
-        console.log("Erro de retorno:" + error);
-        // console.log("Erro de dados(data):" + error.response.data);
-        // console.log("Erro do status:" + error.response.status);
-        // console.log("Erro headers:" + error.response.headers);
-        this.verificaSeEstaLogado();
-      });
-  },   
+  // async mounted() {
+  mounted() {
+    this.setaToken();
+
+    //É so descomentar o codigo abaixo
+    // await this.$acl
+    //   .get("/acl/MontaMenu")
+    //   .then(resp => {
+    //     // this.menu = resp.data.resposta
+    //     this.menu = resp.data;
+    //     //   this.menu = [{"label":"Financeiro","items":[{"label":"Contas a Pagar","items":[{"label":"Cadastro"}]}]},{"label":"CRM","items":null}]
+    //   })
+    //   .catch(error => {
+    //     // handle error
+    //     console.log("Erro de retorno:" + error);
+    //     // console.log("Erro de dados(data):" + error.response.data);
+    //     // console.log("Erro do status:" + error.response.status);
+    //     // console.log("Erro headers:" + error.response.headers);
+
+    this.verificaSeEstaLogado();
+
+    //   });
+  },
   methods: {
+
+    setaToken() {
+      this.token = sessionStorage.getItem("token");
+      console.log("[paginainicial.vue|setaToken] Valor do token:" + this.token )
+      if (this.token == null) {
+        this.$router.push("/login");
+      } else {
+       
+          this.$parent.menu = [
+            { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" },
+            {
+              label: "Menu Modes",
+              icon: "pi pi-fw pi-cog",
+              items: [
+                {
+                  label: "Static Menu",
+                  icon: "pi pi-fw pi-bars",
+                  command: () => (this.layoutMode = "static")
+                }
+              ]
+            }
+          ];
+          this.$parent.nomeDoUsuarioApp = "Pipoca";
+          this.$parent.mostraLeftBar = true;
+          this.$parent.mostraTopBar = true;
+          this.$parent.staticMenuInactive = false;
+        
+      }
+    },
     verificaSeEstaLogado() {
-      let usuario = this.$store.getters.getCredencial;       
-      if (usuario.logado == true) {        
-         this.$parent.menu = [
+      let usuario = true;
+      // = this.$store.getters.getCredencial;
+      // console.log("[paginaInicial.vue| mounted] valor token:" + usuario.token)
+      // console.log("[paginaInicial.vue| mounted] valor token:" + usuario.token)
+
+      if (usuario == true) {
+        this.$parent.menu = [
           { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" },
           {
             label: "Menu Modes",
@@ -48,13 +87,13 @@ export default {
                 icon: "pi pi-fw pi-bars",
                 command: () => (this.layoutMode = "static")
               }
-            ]            
-          }          
-        ]; 
-        this.$parent.nomeDoUsuarioApp = "Pipoca";   
-        this.$parent.mostraLeftBar = true;    
-        this.$parent.mostraTopBar = true;  
-        this.$parent.staticMenuInactive = false; 
+            ]
+          }
+        ];
+        this.$parent.nomeDoUsuarioApp = "Pipoca";
+        this.$parent.mostraLeftBar = true;
+        this.$parent.mostraTopBar = true;
+        this.$parent.staticMenuInactive = false;
       } else {
         this.$router.push("/login");
       }

@@ -123,7 +123,7 @@ func CriaNovoUsuario(ACLUser ACLUsuario, bdPar bancoDeDados.BDCon) error {
 
 	tx := bdPar.BD.Begin()
 	result := tx.Create(&ACLUser)
-	// log.Println("[MAUINFCNU002 | modelAclUsuario.go|CriaNovousuario N.02] linhas afetadas:", result.RowsAffected)
+	// log.Println("[modelAclUsuario.go | CriaNovousuario | INFO 005] senha criptografada:", ACLUser.Password)
 
 	if result.RowsAffected == 0 {
 		msgErro = "[MAUERRCNU001 | modelAclUsuario.go|CriaNovousuario N.01] Erro ao criar no usuário"

@@ -13,16 +13,16 @@ export default new Router({
 			path: '/dash',
 			name: 'dashboard',
 			component: Dashboard
-		},	
-		{
-			path: '/',
-			name: 'paginaInicial',
-			component: paginaInicial
-		},
+		},		
 		{
 			path: '/login',
 			name: 'login',
 			component: login
+		},
+		{
+			path: '/',
+			name: 'paginaInicial',
+			component: paginaInicial
 		},
 	
 	],

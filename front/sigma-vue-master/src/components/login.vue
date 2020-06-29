@@ -1,33 +1,26 @@
 <template>
-  <div class="p-grid">
-    <div class="p-col-12">
-      <div class="card">
-        <div class="container">
-          <a class="links" id="paracadastro"></a>
-          <a class="links" id="paralogin"></a>
+  <div class="content">
+    <div id="loginFormulario">
+      <form style="text-align: center" action>
+        <h1>Login</h1>
+        <p>
+          <label for="login">
+            <span>Seu login</span>
+            <span></span>
+          </label>
+          <InputText type="text" v-model="login" placeholder="Informe seu login" />
+        </p>
 
-          <div class="content">
-            <!--FORMULÁRIO DE LOGIN-->
-            <div id="login">
-              <form style="text-align: center" action>
-                <h1>Login</h1>
-                <p>
-                  <label for="nome_login"><span> Seu login </span><span> </span></label>
-                  <InputText type="text" v-model="login" placeholder="Informe seu login" />
-                </p>
-
-                <p>
-                  <label for="senha_login"> <span>Sua senha </span>  </label>
-                  <InputText type="password" v-model="senha" placeholder="Informe sua senha" />
-                </p>
-                <p>                  
-									<Button label="Logar" @click="realizaLogin"/>
-                </p>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+        <p>
+          <label for="senha_login">
+            <span>Sua senha</span>
+          </label>
+          <InputText type="password" v-model="senha" placeholder="Informe sua senha" />
+        </p>
+        <p>
+          <Button label="Logar" @click.prevent="realizaLogin" />
+        </p>
+      </form>
     </div>
   </div>
 </template>
@@ -37,28 +30,58 @@ export default {
   data() {
     return {
       login: "",
-      senha: ""
+      senha: "",
+      autenticado: false,
+      token: ""
     };
   },
   mounted() {
-    // this.focusInput();
+    this.$parent.nomeDoUsuarioApp = "";
+    this.$parent.mostraLeftBar = false;
+    this.$parent.mostraTopBar = false;
+    this.$parent.staticMenuInactive = true;
   },
   methods: {
-    realizaLogin() {
-      console.log();
-      this.$store.commit("fazLogin", { login: this.login, senha: this.senha, logado: true });
-      let usuario = this.$store.getters.getCredencial;
-      if (usuario.logado == true) {
-        this.$router.replace("/");
-       
-      } else {
-         alert("Usuário não logado");
-        this.$refs.login.focus();
-      }
+    async realizaLogin() {
+      var md5 = require("md5");
+      var senhaLocal = "";
+      const formData = new FormData();
+      senhaLocal = md5(this.senha);
+      formData.append("username", this.login);
+      formData.append("password", senhaLocal);
+
+      
+      await this.$acl
+        // this.$acl
+        .post("login", formData)
+        .then(resp => {
+          this.token = resp.data.token;          
+          console.log("[login.vue|realizaLogin]Valor senha MD5:" + senhaLocal);
+          sessionStorage.setItem("senha", senhaLocal);
+          sessionStorage.setItem("token", this.token);         
+          this.$router.push("/");
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+          if (error.message.includes("401")) {
+            alert("Usuário ou senha inválidos");
+            self.$refs.login.focus();
+          } else {
+            let erroSTR = String(error)
+            if (erroSTR.includes("Network Error")) {
+              
+              alert("Não foi possível alcançar o servidor. Contate o suporte do sistema");
+            } else {
+              alert("Error geral de login:" + error);
+            }
+          }
+        });
     },
+
     focusInput() {
       console.log("[login.vue|focusInput]");
-      this.$refs.login.focus();
+      // this.$refs.login.focus();
       // self.$refs.login.focus()
     }
   }
@@ -66,11 +89,11 @@ export default {
 </script>
 
 <style scoped>
-*,
+/* *,
 *:before,
 *:after {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-}
+} */
 </style>

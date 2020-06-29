@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import store from './store'
+// import store from './store'
 import Button from 'primevue/button';
 import Breadcrumb from 'primevue/breadcrumb';
 import Dialog from 'primevue/dialog';
@@ -54,6 +54,6 @@ Vue.component('TreeTable', TreeTable);
 
 new Vue({
 	router,
-	store,
+	// store,
 	render: h => h(App)
 }).$mount('#app');

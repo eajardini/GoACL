@@ -5,6 +5,7 @@ package lib
 // fazer requisicao de reflash :
 
 import (
+	"log"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -77,14 +78,16 @@ func ConfiguraJWT() *jwt.GinJWTMiddleware {
 				autenticadoLocal bool //Se estiver autenticado, retornar true, caso contrario, retornar false
 			)
 
-			if err := c.ShouldBindJSON(&loginVals); err != nil {
+			if err := c.ShouldBind(&loginVals); err != nil {
+				log.Println("[libJWT.go|autheticador|INFO003] Não fiz Bind")
 				return "", jwt.ErrMissingLoginValues
 			}
 			userID := loginVals.Username
 			password := loginVals.Password
 
-			autenticadoLocal = aclcontroler.FazAutenticacao(userID, password)
+			log.Println("[libJWT.go|autheticador|INFO003] username e password:" + userID + " " + password)
 
+			autenticadoLocal = aclcontroler.FazAutenticacao(userID, password)
 			if autenticadoLocal == true {
 				return &User{
 					UserName:  userID,

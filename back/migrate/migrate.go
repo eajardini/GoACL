@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"time"
 
@@ -27,6 +28,7 @@ var (
 	libMSG                  modelLIB.LIBErroMSGSGBD
 	modulo                  string
 	userACLJSONGlobal       modelACL.ACLUsuarioJSON
+	userACLJSONLoginGlobal  modelACL.ACLUsuarioJSON
 )
 
 //ConfiguraMensagensDeErro : zz
@@ -61,6 +63,11 @@ func CarregaMensagensErroDoArquivoJSON(caminhoArquivoJSONPar string, bdPar banco
 
 func main() {
 	caminhoDoArquivoToml = "../config/ConfigBancoDados.toml"
+	if _, LIBErroMSGRetornoGlobal.Erro = toml.DecodeFile(caminhoDoArquivoToml, &sysConfig); LIBErroMSGRetornoGlobal.Erro != nil {
+		fmt.Println("[migrate.go| main| ERRO 011] Erro ao abrio o arquivo TOML de configuração")
+		log.Fatal(LIBErroMSGRetornoGlobal.Erro)
+	}
+
 	bd.ConfiguraStringDeConexao(caminhoDoArquivoToml)
 	bd.IniciaConexao()
 
@@ -114,9 +121,36 @@ func main() {
 	if LIBErroMSGRetornoGlobal.Erro != nil {
 		log.Println("[migrate.go|main|INFO 006]Erro ao cadastrar o usuário internal", LIBErroMSGRetornoGlobal.Erro.Error())
 		//	panic(0)
+	} else {
+		log.Println("[migrate.go|main|INFO 007] Usuário internal criado com sucesso!")
 	}
-	log.Println("[migrate.go|main|INFO 006] Usuário criado com sucesso!")
 
+	if sysConfig.Principal.Modo == "Desenvolvimento" {
+		// Cria o usuário login para testes de senha login. Será criado apenas no banco de dados DEV
+		h = md5.New()
+		h.Write([]byte("login123"))
+		senha = hex.EncodeToString(h.Sum(nil))
+		// log.Println("[migrate.go | main | INFO 005] senha criptografada:", senha)
+
+		dataAtual = time.Now()
+		now.TimeFormats = append(now.TimeFormats, "02/01/2006")
+		datavalidade, _ := now.Parse("01/01/0001")
+
+		userACLJSONLoginGlobal.Login = "login"
+		userACLJSONLoginGlobal.Password = senha
+		userACLJSONLoginGlobal.Datacriacao = dataAtual.Format("02/01/2006")
+		userACLJSONLoginGlobal.Datavalidade = datavalidade.String()
+		userACLJSONLoginGlobal.Userbloqueado = 0
+		userACLJSONLoginGlobal.Userativo = 1
+
+		LIBErroMSGRetornoGlobal = acl.NovoUsuarioACL(userACLJSONLoginGlobal, bd)
+		if LIBErroMSGRetornoGlobal.Erro != nil {
+			log.Println("[migrate.go|main|INFO 008]Erro ao cadastrar o usuário login", LIBErroMSGRetornoGlobal.Erro.Error())
+			//	panic(0)
+		} else {
+			log.Println("[migrate.go|main|INFO 009] Usuário login criado com sucesso!")
+		}
+	}
 	// Insere no BD os items de menu
 	_, erroLocal = toml.DecodeFile(caminhoDoArquivoToml, &sysConfig)
 	if erroLocal != nil {

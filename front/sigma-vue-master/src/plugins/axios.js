@@ -10,17 +10,9 @@ Vue.use({
     // Vue.prototype.$httpBaseURL = process.env.NODE_ENV === 'production' ? 'http://localhost:8081' : 'http://localhost:8081'
 
     Vue.prototype.$acl = axios.create({
-      baseURL: process.env.NODE_ENV === 'production' ? 'http://localhost:20100/' : 'http://localhost:20100/',
-      
+      baseURL: process.env.NODE_ENV === 'production' ? 'http://192.168.1.111:20100' : 'http://localhost:20100',
+      // timeout:	10000,
     })   
-
-    // Vue.prototype.$http.interceptors.request.use(config => {
-    //   return config
-    // }, error => Promise.reject(error))
-
-    // Vue.prototype.$http.interceptors.response.use(resp => {
-    //   return resp
-    // }, error => Promise.reject(error))
 
   }
 })

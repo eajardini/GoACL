@@ -45,7 +45,8 @@ func FazAutenticacao(userNamePar string, passwordPar string) bool {
 	h := md5.New()
 	h.Write([]byte(passwordPar))
 	senhaLocal = hex.EncodeToString(h.Sum(nil))
-
+	senhaLocal = passwordPar
+	log.Println("[aclUsurio.go|FazAutenticacao|INFO001] Usuario e senha:" + userNamePar + " " + senhaLocal)
 	AutenticadoLocal = modelACL.FazAutenticacao(userNamePar, senhaLocal, bdLocal)
 
 	return AutenticadoLocal
@@ -108,7 +109,6 @@ func NovoUsuarioACL(userACLJSONPar modelACL.ACLUsuarioJSON, bdPar bancoDeDados.B
 	// defer bdPar.FechaConexao()
 
 	userACL = atribuiDadosUsuario(userACLJSONPar)
-	log.Println("[aclUsuario.go|valor userACL]" + userACL.Datacriacao.String())
 	erro = modelACL.CriaNovoUsuario(userACL, bdPar)
 
 	if erro != nil {
@@ -132,13 +132,14 @@ func NovoUsuarioACL(userACLJSONPar modelACL.ACLUsuarioJSON, bdPar bancoDeDados.B
 	erroRetornoLocal.Erro = modelACL.InsereUsuarioEmGrupo(userACL.Login, ACLGrupo.CodigoGrupo, bdPar)
 	if erroRetornoLocal.Erro != nil {
 		moduloLocal = "[aclUsuario.go|NovoUsuario|ERRO03] "
-		log.Println(moduloLocal + erroRetornoLocal.Erro.Error())
+		//	log.Println(moduloLocal + erroRetornoLocal.Erro.Error())
 		erroRetornoLocal = msgErroLocal.BuscaMensagemPeloCodigo(24, moduloLocal)
 		// c.JSON(200, erroRetornoLocal.Mensagem)
 		return erroRetornoLocal
 	}
 
 	moduloLocal = ""
+	erroRetornoLocal.Erro = nil
 	erroRetornoLocal = msgErroLocal.BuscaMensagemPeloCodigo(23, moduloLocal)
 	log.Println("[aclusuario.go|NovoUsuario] Valor da mensagem:" + erroRetornoLocal.Mensagem)
 	return erroRetornoLocal

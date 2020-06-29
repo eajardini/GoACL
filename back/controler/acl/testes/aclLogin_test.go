@@ -79,9 +79,9 @@ func TestGinLogin(t *testing.T) {
 	libMSG.CarregaTodosAsMensagensDeErro(bdLogin)
 	bdLogin.FechaConexao()
 
-	GinFazRequisicao(t, "teste", "12345678", "31/12/2020", "", 0, 1, "[MAUERRCNU003 | modelAclUsuario.go|CriaNovousuario N.03] Erro de insert: Usuário já existe: teste")
-	GinFazRequisicaoLogin(t, "teste", "12345678", "ok")
-	GinFazRequisicaoLogin(t, "", "12345678", "[aclLogin.go|Login|ERRO02] 141 - Nome do usuário ou senha não podem estar em branco.")
-	GinFazRequisicaoLogin(t, "teste", "", "[aclLogin.go|Login|ERRO02] 141 - Nome do usuário ou senha não podem estar em branco.")
-	GinFazRequisicaoLogin(t, "teste", "123456", "[aclLogin.go|Login|ERRO03] 142 - A senha deve conter no mínimo 8 caracteres.")
+	GinFazRequisicao(t, "login", "login123", "31/12/2020", "", 0, 1, "[MAUERRCNU003 | modelAclUsuario.go|CriaNovousuario N.03] Erro de insert: Usuário já existe: login")
+	GinFazRequisicaoLogin(t, "login", "login123", "ok")
+	GinFazRequisicaoLogin(t, "", "login123", "[aclLogin.go|Login|ERRO02] 141 - Nome do usuário ou senha não podem estar em branco.")
+	GinFazRequisicaoLogin(t, "login", "", "[aclLogin.go|Login|ERRO02] 141 - Nome do usuário ou senha não podem estar em branco.")
+	GinFazRequisicaoLogin(t, "login", "login", "[aclLogin.go|Login|ERRO03] 142 - A senha deve conter no mínimo 8 caracteres.")
 }

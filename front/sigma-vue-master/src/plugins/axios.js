@@ -16,3 +16,16 @@ Vue.use({
 
   }
 })
+
+
+// this.$acl.interceptors.request.use((config) => {
+//   const token = this.$cookies.get("token");
+
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`
+//   }
+
+//   return config
+// }, (err) => {
+//   return Promise.reject(err)
+// })

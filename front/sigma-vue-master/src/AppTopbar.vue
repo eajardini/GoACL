@@ -28,7 +28,8 @@ export default {
       this.$parent.mostraTopBar = false;
       this.$parent.staticMenuInactive = true;
       this.$parent.nomeDoUsuarioApp = "";        
-      sessionStorage.clear();
+      this.$cookies.remove("credencial");
+      this.$cookies.remove("token");
      this.$router.push("/login");
     }
   }

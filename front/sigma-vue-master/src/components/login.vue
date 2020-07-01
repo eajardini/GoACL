@@ -50,15 +50,18 @@ export default {
       formData.append("username", this.login);
       formData.append("password", senhaLocal);
 
-      
       await this.$acl
         // this.$acl
         .post("login", formData)
         .then(resp => {
-          this.token = resp.data.token;          
+          this.token = "{'headers': { 'Authorization': 'Bearer ' " + resp.data.token + " ,} }" ;
           console.log("[login.vue|realizaLogin]Valor senha MD5:" + senhaLocal);
-          sessionStorage.setItem("senha", senhaLocal);
-          sessionStorage.setItem("token", this.token);         
+          // sessionStorage.setItem("credencial", senhaLocal);
+          // sessionStorage.setItem("token", this.token);
+          //this.$session.start();
+          this.$cookies.set("credencial", senhaLocal);
+          this.$cookies.set("token", this.token);
+          // Vue.http.headers.common["Authorization"] = "Bearer " + this.token;          
           this.$router.push("/");
         })
         .catch(error => {
@@ -66,14 +69,21 @@ export default {
           console.log(error);
           if (error.message.includes("401")) {
             alert("Usuário ou senha inválidos");
+            this.$cookies.remove("credencial");
+            this.$cookies.remove("token");
             self.$refs.login.focus();
           } else {
-            let erroSTR = String(error)
+            let erroSTR = String(error);
             if (erroSTR.includes("Network Error")) {
-              
-              alert("Não foi possível alcançar o servidor. Contate o suporte do sistema");
+              alert(
+                "Não foi possível alcançar o servidor. Contate o suporte do sistema"
+              );
+              this.$cookies.remove("credencial");
+              this.$cookies.remove("token");
             } else {
               alert("Error geral de login:" + error);
+              this.$cookies.remove("credencial");
+              this.$cookies.remove("token");
             }
           }
         });

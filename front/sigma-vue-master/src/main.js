@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import VueCookies from 'vue-cookies'
+// import VueSession from "vue-session"
 // import store from './store'
 import Button from 'primevue/button';
 import Breadcrumb from 'primevue/breadcrumb';
@@ -32,7 +34,16 @@ import './assets/layout/layout.scss';
 import "./plugins/axios"
 
 
+
 Vue.use(ToastService);
+// var options = {
+// 	persist: true
+// }
+//Vue.use(VueSession, options) // true ativa a persistência entre tabs
+// Vue.use(VueSession)
+Vue.use(VueCookies);
+Vue.$cookies.config("0");
+
 Vue.directive('tooltip', Tooltip);
 
 Vue.config.productionTip = false;

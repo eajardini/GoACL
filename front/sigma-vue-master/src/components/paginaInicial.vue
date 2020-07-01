@@ -16,58 +16,66 @@ export default {
       token: ""
     };
   },
+  beforeCreate: function () {
+    if (this.$cookies.get("token")==null) {
+      this.$router.push('/login')
+    }
+    this.token = this.$cookies.get("token");
+    console.log("[paginainicial.vue|beforeCreate] Valor token:" + this.token)
+  },
   // async mounted() {
   mounted() {
     this.setaToken();
 
-    //É so descomentar o codigo abaixo
-    // await this.$acl
-    //   .get("/acl/MontaMenu")
-    //   .then(resp => {
-    //     // this.menu = resp.data.resposta
-    //     this.menu = resp.data;
-    //     //   this.menu = [{"label":"Financeiro","items":[{"label":"Contas a Pagar","items":[{"label":"Cadastro"}]}]},{"label":"CRM","items":null}]
-    //   })
-    //   .catch(error => {
-    //     // handle error
-    //     console.log("Erro de retorno:" + error);
-    //     // console.log("Erro de dados(data):" + error.response.data);
-    //     // console.log("Erro do status:" + error.response.status);
-    //     // console.log("Erro headers:" + error.response.headers);
+    
+    this.$acl
+      .get("/acl/MontaMenu", this.token)
+      .then(resp => {
+        // this.menu = resp.data.resposta
+        this.menu = resp.data;
+        //   this.menu = [{"label":"Financeiro","items":[{"label":"Contas a Pagar","items":[{"label":"Cadastro"}]}]},{"label":"CRM","items":null}]
+      })
+      .catch(error => {
+        // handle error
+        console.log("Erro de retorno:" + error);
+        // console.log("Erro de dados(data):" + error.response.data);
+        // console.log("Erro do status:" + error.response.status);
+        // console.log("Erro headers:" + error.response.headers);
 
-    this.verificaSeEstaLogado();
+    // this.verificaSeEstaLogado();
 
-    //   });
+      });
   },
   methods: {
 
     setaToken() {
-      this.token = sessionStorage.getItem("token");
-      console.log("[paginainicial.vue|setaToken] Valor do token:" + this.token )
-      if (this.token == null) {
-        this.$router.push("/login");
-      } else {
+      // this.token = sessionStorage.getItem("token");
+      // this.token = this.$session.get("token")
+      // console.log("[paginainicial.vue|setaToken] Valor do token:" + this.token )
+      // if (this.token == null) {
+      //   this.$router.push("/login");
+      // } else {
        
-          this.$parent.menu = [
-            { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" },
-            {
-              label: "Menu Modes",
-              icon: "pi pi-fw pi-cog",
-              items: [
-                {
-                  label: "Static Menu",
-                  icon: "pi pi-fw pi-bars",
-                  command: () => (this.layoutMode = "static")
-                }
-              ]
-            }
-          ];
+          // this.$parent.menu = [
+          //   { label: "Dashboard", icon: "pi pi-fw pi-home", to: "/" },
+          //   {
+          //     label: "Menu Modes",
+          //     icon: "pi pi-fw pi-cog",
+          //     items: [
+          //       {
+          //         label: "Static Menu",
+          //         icon: "pi pi-fw pi-bars",
+          //         command: () => (this.layoutMode = "static")
+          //       }
+          //     ]
+          //   }
+          // ];
           this.$parent.nomeDoUsuarioApp = "Pipoca";
           this.$parent.mostraLeftBar = true;
           this.$parent.mostraTopBar = true;
           this.$parent.staticMenuInactive = false;
         
-      }
+      // }
     },
     verificaSeEstaLogado() {
       let usuario = true;

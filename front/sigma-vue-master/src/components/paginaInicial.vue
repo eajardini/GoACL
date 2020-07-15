@@ -40,6 +40,7 @@ export default {
         );
         //Teste  para testa o git
         // de novo
+        //fechei e entrei de novo
       })
       .catch(error => {
         console.log("Erro de retorno:" + error);

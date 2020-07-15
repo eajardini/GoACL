@@ -30,6 +30,7 @@ export default {
       this.$parent.nomeDoUsuarioApp = "";        
       this.$cookies.remove("credencial");
       this.$cookies.remove("token");
+      this.$cookies.remove("bearer");
      this.$router.push("/login");
     }
   }

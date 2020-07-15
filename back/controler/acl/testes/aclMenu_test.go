@@ -54,7 +54,7 @@ func ConfigRouterMenu() *gin.Engine {
 // GinFazRequisicaoMontaMenu : zz
 func GinFazRequisicaoMontaMenu(t *testing.T, ComparacaoRetorno string) {
 	var (
-		ItemsNivel1Locais []modelACL.ItemsNivel1
+		Menu []modelACL.ItemsNivel1
 	)
 
 	r := ConfigRouterMenu()
@@ -63,10 +63,10 @@ func GinFazRequisicaoMontaMenu(t *testing.T, ComparacaoRetorno string) {
 	req, _ := http.NewRequest("GET", "/acl/MontaMenu", nil)
 	r.ServeHTTP(w, req)
 	assert.Equal(t, 200, w.Code)
-	json.Unmarshal([]byte(w.Body.String()), &ItemsNivel1Locais)
-	log.Println("[aclMenu_test.go|GinFazRequisicaoMontaMenu N.01|INFO] Valor retornado:", ItemsNivel1Locais)
-	assert.NotEqual(t, ComparacaoRetorno, ItemsNivel1Locais)
-	assert.Greater(t, len(ItemsNivel1Locais), 0)
+	json.Unmarshal([]byte(w.Body.String()), &Menu)
+	log.Println("[aclMenu_test.go|GinFazRequisicaoMontaMenu N.01|INFO] Valor retornado:", w.Body.String())
+	assert.NotEqual(t, ComparacaoRetorno, Menu)
+	assert.Greater(t, len(Menu), 10)
 }
 
 func TestGinFazRequisicaoMontaMenu(t *testing.T) {

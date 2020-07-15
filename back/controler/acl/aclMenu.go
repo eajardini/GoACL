@@ -1,6 +1,8 @@
 package acl
 
 import (
+	"log"
+
 	modelACL "github.com/eajardini/ProjetoGoACL/GoACL/back/controler/acl/model"
 	"github.com/gin-gonic/gin"
 )
@@ -31,11 +33,11 @@ func MontaMenu(c *gin.Context) {
 		Resp.Mensagem = erro.Error()
 		ItemsNivel1Locais[0].Label = "Nenhum menu localizado"
 	}
-	//log.Println("[aclMenu.go|MontaMenu N.01|INFO] Valor retornado:", ItemsNivel1Locais)
-	//** O código abaixoparece ser necessário lá no vue
+
+	log.Println("[aclMenu.go|MontaMenu|INFO 001] valor menuLocal:", ItemsNivel1Locais)
+
+	c.JSON(200, ItemsNivel1Locais)
 	// c.JSON(200, gin.H{
 	// 	"resposta": ItemsNivel1Locais,
 	// })
-
-	c.JSON(200, ItemsNivel1Locais)
 }

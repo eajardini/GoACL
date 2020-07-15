@@ -7,7 +7,7 @@ require (
 	github.com/appleboy/gin-jwt v2.5.0+incompatible
 	github.com/appleboy/gin-jwt/v2 v2.6.3
 	github.com/gin-contrib/cors v1.3.0
-	github.com/gin-gonic/gin v1.5.0
+	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator v9.31.0+incompatible
 	// github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.2.0

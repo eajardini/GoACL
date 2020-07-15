@@ -32,7 +32,8 @@ export default {
       login: "",
       senha: "",
       autenticado: false,
-      token: ""
+      token: "",
+      bearer:"",
     };
   },
   mounted() {
@@ -54,13 +55,17 @@ export default {
         // this.$acl
         .post("login", formData)
         .then(resp => {
-          this.token = "{'headers': { 'Authorization': 'Bearer ' " + resp.data.token + " ,} }" ;
+          //this.token = "{'headers': { 'Authorization': 'Bearer ' " + resp.data.token + " ,} }" ;
+          this.token = resp.data.token;
+          this.bearer = "Bearer " + this.token;
           console.log("[login.vue|realizaLogin]Valor senha MD5:" + senhaLocal);
           // sessionStorage.setItem("credencial", senhaLocal);
           // sessionStorage.setItem("token", this.token);
           //this.$session.start();
           this.$cookies.set("credencial", senhaLocal);
           this.$cookies.set("token", this.token);
+          this.$cookies.set("bearer", this.bearer);
+
           // Vue.http.headers.common["Authorization"] = "Bearer " + this.token;          
           this.$router.push("/");
         })

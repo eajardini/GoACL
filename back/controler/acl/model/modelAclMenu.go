@@ -207,10 +207,10 @@ func MontaMenu(bdPar bancoDeDados.BDCon) ([]ItemsNivel1, error) {
 		// itensDaTabelaMenu         []modelmenu.ItensDaTabelaMenu
 		// ItemsNivel1Local          ItemsNivel1
 		// ItemsNivel1Locais         []ItemsNivel1
-		menuLocal                 []ItemsNivel1
-		menuItemNivel1            ItemsNivel1
-		menuItemNivel2            ItemsNivel2
-		menuItemNivel3            ItemsNivel3
+		MenuLocal                 []ItemsNivel1
+		MenuItemNivel1            ItemsNivel1
+		MenuItemNivel2            ItemsNivel2
+		MenuItemNivel3            ItemsNivel3
 		ACLMenuLocais             []ACLMenu
 		sql                       string
 		erroRetorno               error
@@ -248,32 +248,32 @@ func MontaMenu(bdPar bancoDeDados.BDCon) ([]ItemsNivel1, error) {
 		if itensMenu.Nivel == 1 {
 			posN1++
 
-			menuItemNivel1 = ItemsNivel1{
+			MenuItemNivel1 = ItemsNivel1{
 				Label: itensMenu.Label,
 			}
 
-			menuLocal = append(menuLocal, menuItemNivel1)
+			MenuLocal = append(MenuLocal, MenuItemNivel1)
 			posN2 = -1
 
 		} else if itensMenu.Nivel == 2 {
 			posN2++
-			menuItemNivel2 = ItemsNivel2{
+			MenuItemNivel2 = ItemsNivel2{
 				Label: itensMenu.Label,
 			}
-			menuLocal[posN1].Items = append(menuLocal[posN1].Items, menuItemNivel2)
+			MenuLocal[posN1].Items = append(MenuLocal[posN1].Items, MenuItemNivel2)
 
 		} else if itensMenu.Nivel == 3 {
 
-			menuItemNivel3 = ItemsNivel3{
+			MenuItemNivel3 = ItemsNivel3{
 				Label: itensMenu.Label,
 				To:    itensMenu.To.String,
 			}
-			menuLocal[posN1].Items[posN2].Items = append(menuLocal[posN1].Items[posN2].Items, menuItemNivel3)
+			MenuLocal[posN1].Items[posN2].Items = append(MenuLocal[posN1].Items[posN2].Items, MenuItemNivel3)
 
 		}
 	}
 
-	log.Println("[modelAclMenu.go|MontaMenu N.04|INFO] valor menuLocal:", menuLocal)
-	return menuLocal, nil
+	log.Println("[modelAclMenu.go|MontaMenu N.04|INFO] valor MenuLocal:", MenuLocal)
+	return MenuLocal, nil
 
 }
